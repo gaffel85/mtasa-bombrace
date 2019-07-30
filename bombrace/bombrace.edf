@@ -1,5 +1,5 @@
 <def name="bombrace">
-	<element name="playerSpawnPoints" friendlyname="Player Spawnpoint">
+	<element name="playerSpawnPoint" friendlyname="Player Spawnpoint">
 		<data name="position" type="coord3d" default="0,0,0" />
 		<data name="rotation" type="number" default="0" />
 		<data name="skin" type="skinID" default="0" />

@@ -15,7 +15,7 @@ addEventHandler ( "onVehicleStartExit", getRootElement(), exitVehicle)
 
 function spawn(thePlayer)
 	local spawnPoint = spawnPoints[currentSpawn]
-	currentSpawn = currentSpawn % spawnPoints + 1
+	currentSpawn = currentSpawn % #spawnPoints + 1
   	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
   	local vehicle = createVehicle(cars[1], posX, posY, posZ, 0, 0, 0, "BOMBER")
 	spawnPlayer(thePlayer, 0, 0, 0, 0, 253)
@@ -62,7 +62,7 @@ end
 function startGameMap( startedMap )
 	outputDebugString("startGameMap")
 	local mapRoot = getResourceRootElement( startedMap )
-    spawnPoints = getElementsByType ( "playerSpawnPoints" , mapRoot )
+    spawnPoints = getElementsByType ( "playerSpawnPoint" , mapRoot )
   	resetGame()
 end
 addEventHandler("onGamemodeMapStart", getRootElement(), startGameMap)
@@ -147,7 +147,7 @@ function clearMessageForPlayer ( player, ID )
 end
 
 addEvent("onDisplayClientText", true)
-addEventHandler ( "onDisplayClientText", getRootElement(), displayMessageForPlayer)
+addEventHandler ( "onDisplayClientText", resourceRoot, displayMessageForPlayer)
 
 addEvent("onClearClientText", true)
 addEventHandler ( "onClearClientText", getRootElement(), clearMessageForPlayer)
@@ -169,7 +169,7 @@ end
 addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
 
 function collisisionWithPlayer ( otherPlayer )
-	outputDebugString("Collision detected!")
+	outputChatBox("Server: Collision detected!")
 	if ( client == bombHolder or otherPlayer == bombHolder) then
 
 	end
