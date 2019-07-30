@@ -1,0 +1,10 @@
+<meta>
+    <info author="Ola Gawell" type="gamemode" name="bombrace" description="Pass the bomb to some other car before the time runs out"  edf:definition="bombrace.edf" />
+	<include resource="scoreboard"/>
+	<include resource="votemanager"/>
+	<include resource="easytext" />
+
+	<script src="bomb.server.main.lua" />
+    <script src="bomb.client.collision.lua" type="client" />
+
+</meta>
