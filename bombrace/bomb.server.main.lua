@@ -7,6 +7,13 @@ local cars = {411, 596}
 
 scoreboardRes = getResourceFromName( "scoreboard" )
 
+function selectRandomBombHolder()
+	local players = getElementsByType ( "player" )
+	if ( #players > 1 ) then
+		
+	end
+end
+
 -- Stop player from exiting vehicle
 function exitVehicle ( thePlayer, seat, jacked )
     cancelEvent()
@@ -164,6 +171,9 @@ end )
 
 function joinHandler()
 	spawn(source)
+	if ( bombHolder == nil) then
+		selectRandomBombHolder()
+	end
 	outputChatBox("Welcome to My Server", source)
 end
 addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
