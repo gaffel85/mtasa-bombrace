@@ -10,8 +10,14 @@ scoreboardRes = getResourceFromName( "scoreboard" )
 function selectRandomBombHolder()
 	local players = getElementsByType ( "player" )
 	if ( #players > 1 ) then
-		
+		local newBombHolder = players[math.random ( #players ) ]
+		setBombHolder ( newBombHolder )
 	end
+end
+
+function setBombHolder ( player )
+	bombHolder = player
+	triggerClientEvent("onBombHolderChanged", resourceRoot)
 end
 
 -- Stop player from exiting vehicle

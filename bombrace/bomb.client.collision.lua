@@ -1,10 +1,29 @@
+local bombHolder = nil
+
+function bombHolderChanged()
+	bombHolder = source
+end
+addEvent("onBombHolderChanged", true)
+addEventHandler("onBombHolderChanged", resourceRoot, bombHolderChanged)
+
 
 --function displayMessageForPlayer ( ID, message, displayTime, posX, posY, r, g, b, alpha, scale )
 --	triggerServerEvent("onDisplayClientText", resourceRoot, getLocalPlayer(), ID, message, displayTime, posX, posY, r, g, b, alpha, scale)
 --end
 
 function onCollision(collider)
-	if ( collider ~= nil ) then
+	if (bombHolder == nil) then
+		outputChatBox("Client: no bomb holder set")
+	end
+
+	if (localPlayer == bombHolder) then
+		outputChatBox("Client: local player is bombholder")
+	else
+		outputChatBox("Client: other player is bomb holder")
+		outputChatBox(inspect(bombHolder))
+	end
+	
+	if ( collider ~= nil and localPlayer == bombHolder) then
 		outputChatBox("Client: Collision detected! Type: "..getElementType ( collider ))
 		if ( source == getPedOccupiedVehicle(localPlayer) or getElementType ( collider ) == "vehicle" ) then
 			outputChatBox("Client: Collision with vehicle!")
