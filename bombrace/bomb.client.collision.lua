@@ -1,7 +1,7 @@
 local bombHolder = nil
 
-function bombHolderChanged()
-	bombHolder = source
+function bombHolderChanged ( bombHolder )
+	bombHolder = bombHolder
 end
 addEvent("onBombHolderChanged", true)
 addEventHandler("onBombHolderChanged", resourceRoot, bombHolderChanged)
@@ -14,6 +14,7 @@ addEventHandler("onBombHolderChanged", resourceRoot, bombHolderChanged)
 function onCollision(collider)
 	if (bombHolder == nil) then
 		outputChatBox("Client: no bomb holder set")
+		return
 	end
 
 	if (localPlayer == bombHolder) then

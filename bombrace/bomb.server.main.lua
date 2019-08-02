@@ -1,14 +1,22 @@
 local spawnPoints
 local currentSpawn = 1
+
 local bombHolder
+local bombMarker
+local bombEndTime
+
+local BOMB_START_SECONDS = 30
 local SCORE_KEY = "Score"
+local PRESENTING_BOMB_HOLDER_TEXT_ID = 987771
+local PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID = 987772
+local BOMB_TIMER_TEXT_ID = 987773
 
 local cars = {411, 596}
 
 scoreboardRes = getResourceFromName( "scoreboard" )
 
 function selectRandomBombHolder()
-	local players = getElementsByType ( "player" )
+	local players = getAlivePlayers ()
 	if ( #players > 1 ) then
 		local newBombHolder = players[math.random ( #players ) ]
 		setBombHolder ( newBombHolder )
@@ -17,7 +25,15 @@ end
 
 function setBombHolder ( player )
 	bombHolder = player
-	triggerClientEvent("onBombHolderChanged", resourceRoot)
+	triggerClientEvent(resourceRoot, "onBombHolderChanged", resourceRoot, bombHolder)
+
+	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID, "You have the bomb. Hit someone to pass the bomb", 5000, 0.5, 0.3, 255, 0, 0 )
+
+	if(bombMarker == nil ) then
+		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
+	end
+	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
+	
 end
 
 -- Stop player from exiting vehicle
@@ -44,6 +60,26 @@ function respawnAllPlayers()
 	for k,v in ipairs(players) do
 		spawn ( v )
 	end
+end
+
+function tickBombTimer()
+	local players = getElementsByType ( "player" )
+	if(bombHolder ~= nil and #players > 0) then
+		local currentTime = getRealTime()
+		local timeLeft = bombEndTime - currentTime
+		if ( timeLeft < 0 ) then
+			local vehicle = getPlayerOccupiedVehicle ( bombHolder )
+			blowVehicle(vehicle)
+		end
+
+		displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
+	end
+end
+setTimer(tickBombTimer, 1000, 0)
+
+function resetBomb()
+	local time = getRealTime()
+	bombEndTime = time.timestamp + BOMB_START_SECONDS
 end
 
 function resetRoundVars()
@@ -86,8 +122,8 @@ function resetGame()
 end
 
 function playerDied( ammo, attacker, weapon, bodypart )
-	setTimer( spawn, 2000, 1, source)
-	changeBombHolder(source)
+	resetBomb()
+	selectRandomBombHolder()
 end
 addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
 
