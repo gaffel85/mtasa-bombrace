@@ -26,8 +26,6 @@ function onCollision(collider)
 				triggerServerEvent("onCollisionWithPlayer", resourceRoot, otherPlayer)
 			end
 		end
-	else 
-		outputChatBox("Client: Collision with unkown type!")
 	end
 end
 addEventHandler("onClientVehicleCollision", getRootElement(), onCollision)
