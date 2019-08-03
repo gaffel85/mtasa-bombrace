@@ -1,12 +1,14 @@
 local bombHolder = nil
 
-function bombHolderChanged ( bombHolder )
+-- Since we listen for events on the root element we can use the bombHolder as the source. Events
+-- triggered on any element will be catched if we listening to the root element.
+function bombHolderChanged ( )
 	outputChatBox("Client: New bomb holder")
-	outputChatBox(inspect(bombHolder))
-	bombHolder = bombHolder
+	outputChatBox(inspect(source))
+	bombHolder = source
 end
 addEvent("onBombHolderChanged", true)
-addEventHandler("onBombHolderChanged", resourceRoot, bombHolderChanged)
+addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
 
 
 --function displayMessageForPlayer ( ID, message, displayTime, posX, posY, r, g, b, alpha, scale )

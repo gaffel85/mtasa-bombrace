@@ -25,7 +25,7 @@ end
 
 function setBombHolder ( player )
 	bombHolder = player
-	triggerClientEvent(resourceRoot, "onBombHolderChanged", resourceRoot, bombHolder)
+	triggerClientEvent("onBombHolderChanged", bombHolder)
 
 	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", bombHolder, "You have the bomb. Hit someone to pass the bomb", 5000, 0.5, 0.3, 255, 0, 0 )
 
@@ -231,4 +231,4 @@ function collisisionWithPlayer ( otherPlayer )
 	end
 end
 addEvent( "onCollisionWithPlayer", true )
-addEventHandler( "onCollisionWithPlayer", resourceRoot, collisisionWithPlayer )
+addEventHandler( "onCollisionWithPlayer", getRootElement(), collisisionWithPlayer )
