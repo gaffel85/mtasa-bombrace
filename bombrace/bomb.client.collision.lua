@@ -3,8 +3,6 @@ local bombHolder = nil
 -- Since we listen for events on the root element we can use the bombHolder as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
 function bombHolderChanged ( )
-	outputChatBox("Client: New bomb holder")
-	outputChatBox(inspect(source))
 	bombHolder = source
 end
 addEvent("onBombHolderChanged", true)
@@ -17,12 +15,14 @@ addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
 
 function onCollision(collider)
 	if ( collider ~= nil and localPlayer == bombHolder) then
-		outputChatBox("Client: Collision detected! Type: "..getElementType ( collider ))
-		if ( source == getPedOccupiedVehicle(localPlayer) or getElementType ( collider ) == "vehicle" ) then
-			outputChatBox("Client: Collision with vehicle!")
+		outputChatBox("Source: "..inspect(source))
+		outputChatBox("Collider: "..inspect(collider))
+		outputChatBox("Collider type: "..inspect(getElementType ( collider )))
+		outputChatBox("Local player vehicle: "..inspect(getPedOccupiedVehicle(localPlayer)))
+		if ( source == getPedOccupiedVehicle(localPlayer) and getElementType ( collider ) == "vehicle" ) then
 			local otherPlayer = getVehicleOccupant(collider)
+			outputChatBox("Other player: "..inspect(otherPlayer))
 			if ( otherPlayer ~= false) then
-				outputChatBox("Client: Collision with otehr player in vehicle!")
 				triggerServerEvent("onCollisionWithPlayer", resourceRoot, otherPlayer)
 			end
 		end

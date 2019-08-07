@@ -5,7 +5,7 @@ local bombHolder
 local bombMarker
 local bombEndTime
 
-local BOMB_START_SECONDS = 60
+local BOMB_START_SECONDS = 120
 local SCORE_KEY = "Score"
 local PRESENTING_BOMB_HOLDER_TEXT_ID = 987771
 local PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID = 987772
@@ -17,6 +17,7 @@ scoreboardRes = getResourceFromName( "scoreboard" )
 
 function selectRandomBombHolder()
 	local players = getAlivePlayers ()
+	outputChatBox("Alive players: "..#players)
 	if ( #players > 1 ) then
 		local newBombHolder = players[math.random ( #players ) ]
 		setBombHolder ( newBombHolder )
@@ -25,9 +26,11 @@ end
 
 function setBombHolder ( player )
 	bombHolder = player
-	triggerClientEvent("onBombHolderChanged", getRootElement())
+	outputChatBox("Setting bomb holder to...")
+	outputChatBox("..."..inspect(player))
+	triggerClientEvent("onBombHolderChanged", player)
 
-	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", bombHolder, "You have the bomb. Hit someone to pass the bomb", 5000, 0.5, 0.3, 255, 0, 0 )
+	--displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
 
 	if(bombMarker == nil ) then
 		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
@@ -87,7 +90,7 @@ function resetBomb()
 end
 
 function resetRoundVars()
-  
+	bombHolder = nil
 end
 
 function newRound()
@@ -124,6 +127,7 @@ function resetGame()
   resetBomb()
   resetRoundVars()
   respawnAllPlayers()
+  selectRandomBombHolder()
 end
 
 function playerDied( ammo, attacker, weapon, bodypart )
@@ -226,8 +230,10 @@ addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
 
 function collisisionWithPlayer ( otherPlayer )
 	outputChatBox("Server: Collision detected!")
+	outputChatBox("Client: "..inspect(client))
+	outputChatBox("other Player: "..inspect(otherPlayer))
 	if ( client == bombHolder and otherPlayer ~= nil) then
-		setBombHolder = otherPlayer
+		setBombHolder( otherPlayer )
 	end
 end
 addEvent( "onCollisionWithPlayer", true )
