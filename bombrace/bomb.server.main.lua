@@ -25,10 +25,17 @@ function selectRandomBombHolder()
 end
 
 function setBombHolder ( player )
+	-- Make old bomb holder invisible
+	local oldBombHolder = bombHolder
+	--[[if ( oldBombHolder ~= nil ) then
+		local result = setElementAlpha( oldBombHolder, 140 )
+		setTimer(function()
+			setElementAlpha( oldBombHolder, 255 )
+		end, 10000, 1)
+	end ]]
+
 	bombHolder = player
-	outputChatBox("Setting bomb holder to...")
-	outputChatBox("..."..inspect(player))
-	triggerClientEvent("onBombHolderChanged", player)
+	triggerClientEvent("onBombHolderChanged", player, oldBombHolder)
 
 	--displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
 
@@ -229,9 +236,6 @@ end
 addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
 
 function collisisionWithPlayer ( otherPlayer )
-	outputChatBox("Server: Collision detected!")
-	outputChatBox("Client: "..inspect(client))
-	outputChatBox("other Player: "..inspect(otherPlayer))
 	if ( client == bombHolder and otherPlayer ~= nil) then
 		setBombHolder( otherPlayer )
 	end

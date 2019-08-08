@@ -1,4 +1,4 @@
 <map edf:definitions="bombrace">
-    <playerSpawnPoint id="spawnpoint (1)" interior="0" skin="121" dimension="0" alpha="255" posX="2665.2" posY="-1656.9" posZ="20.7" rotX="0" rotY="0" rotZ="0"></playerSpawnPoint>
-    <playerSpawnPoint id="spawnpoint (2)" interior="0" skin="121" dimension="0" alpha="255" posX="2705.2" posY="-1696.9" posZ="11.7" rotX="0" rotY="0" rotZ="0"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (1)" skin="0" posX="1949.4" posY="-2469.6001" posZ="13.5" rotX="0" rotY="0" rotZ="0"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (2)" skin="0" posX="1947.4" posY="-2454.3999" posZ="13.5" rotX="0" rotY="0" rotZ="184"></playerSpawnPoint>
 </map>
