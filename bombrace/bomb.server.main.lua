@@ -11,6 +11,7 @@ local bombHolder
 local bombMarker
 local bombEndTime
 local lobbyMarker
+local participants = {}
 
 local BOMB_START_SECONDS = 120
 local SCORE_KEY = "Score"
@@ -19,6 +20,8 @@ local PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID = 987772
 local LATE_JOIN_TEXT_ID = 987774
 local BOMB_TIMER_TEXT_ID = 987773
 local WINNER_TEXT_ID = 987775
+local PLAYER_READY_TEXT_ID = 987776
+local LEAVING_LOBBY_TEXT_ID = 987777
 
 local cars = {411, 596}
 
@@ -106,7 +109,7 @@ function tickBombTimer()
 	if (gameState == GAME_STATE_PREPARE_ROUND) then
 		timeLeft = bombTimeLeft()
 		if ( timeLeft < 0 ) then
-			
+			startActiveRound()
 		else
 			displayMessageForAll(BOMB_TIMER_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
 		end
@@ -193,9 +196,9 @@ end
 function showLobbyMarker()
 	if (lobbyMarker == nil) then
 		local posX, posY, posZ = getElementPosition ( mapLobbyMarker )
-		local checkType = getElementData ( element, "type" )
-		local color = getElementData ( element, "color" )
-		local size = getElementData ( element, "size" )
+		local checkType = getElementData ( mapLobbyMarker, "type" )
+		local color = getElementData ( mapLobbyMarker, "color" )
+		local size = getElementData ( mapLobbyMarker, "size" )
 		lobbyMarker = createMarker(posX, posY, posZ, checkType, size, r, g, b)
 	end
 end
@@ -204,7 +207,8 @@ function startGameMap( startedMap )
 	outputDebugString("startGameMap")
 	local mapRoot = getResourceRootElement( startedMap )
 	spawnPoints = getElementsByType ( "playerSpawnPoint" , mapRoot )
-	lobbyMarker = getElementsByType ( "lobbyMarker" , mapRoot ) [1]
+	mapLobbyMarker = getElementsByType ( "lobbyStart" , mapRoot )[1]
+	
   	resetGame()
 end
 addEventHandler("onGamemodeMapStart", getRootElement(), startGameMap)
@@ -218,19 +222,22 @@ addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
 
 function handleLateJoin()
 	if (gameState == GAME_STATE_ACTIVE_GAME) then
-		val message = getPlayerName(source).." joined a started game. He gets the bomb!"
+		local message = getPlayerName(source).." joined a started game. He gets the bomb!"
 		displayMessageForAll(LATE_JOIN_TEXT_ID, message, nil, nil, 2000, 0.5, 0.5, 0, 255, 0 )
 		setTimer(setBombHolder, 2000, 1, source)
 	end
 end
 
 function leaveLobby()
+	local time = getRealTime()
+	bombEndTime = time.timestamp + 30
 	gameState = GAME_STATE_PREPARE_ROUND
 	removeLobbyMarker()
 	repairAllCars()
 end
 
 function enterLobby()
+	participants = {}
 	gameState = GAME_STATE_LOBBY
 	resetRoundVars()
 	showLobbyMarker()
@@ -269,6 +276,30 @@ function resetRoundVars()
 		bombMarker = nil
 	end 
 end
+
+
+function playerReady(player)
+	local players = getElementsByType ( "player" )
+	if arrayExists(participants, player) == false then
+
+		table.insert(participants, player)
+		clearMessageForAll(PLAYER_READY_TEXT_ID)
+		displayMessageForAll(PLAYER_READY_TEXT_ID, getPlayerName(player).." is ready", nil, nil, 5000, 0.5, 0.9)
+
+		if #participants == #players then
+			displayMessageForAll(LEAVING_LOBBY_TEXT_ID, "Game will start in 5 sec", nil, nil, 5000, 0.5, 0.5, 88, 255, 120)
+			setTimer( leaveLobby, 5000, 1)
+		end
+	end
+end
+
+function markerHit( markerHit, matchingDimension )
+	if gameState == GAME_STATE_LOBBY and markerHit == lobbyMarker then
+		playerReady(source)
+		return
+	end
+end
+addEventHandler( "onPlayerMarkerHit", getRootElement(), markerHit )
 
 function playerDied( ammo, attacker, weapon, bodypart )
 	
