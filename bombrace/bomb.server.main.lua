@@ -16,6 +16,8 @@ local lobbyMarker
 local participants = {}
 
 local BOMB_START_SECONDS = 120
+local PREPARE_TIME = 10
+
 local SCORE_KEY = "Score"
 local PRESENTING_BOMB_HOLDER_TEXT_ID = 987771
 local PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID = 987772
@@ -60,6 +62,8 @@ function setBombHolder ( player )
 		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
 	end
 	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
+
+	addPlayerBlips()
 	
 	fixVehicle (getPedOccupiedVehicle ( player ) )
 end
@@ -234,7 +238,7 @@ end
 
 function leaveLobby()
 	local time = getRealTime()
-	bombEndTime = time.timestamp + 30
+	bombEndTime = time.timestamp + PREPARE_TIME
 	gameState = GAME_STATE_PREPARE_ROUND
 	removeLobbyMarker()
 	repairAllCars()
@@ -320,11 +324,13 @@ addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
 
 function addPlayerBlips()
 	local players = getElementsByType ( "player" )
-	for k1,v1 in ipairs(players) do
+	for k1,v1 in ipairs(players) do	
 		local blip = nil
-		blip = createBlipAttachedTo ( v1, 5 )
-		setElementVisibleTo ( blip, root, true )
-		setElementVisibleTo ( blip, v1, false )
+		blip = createBlipAttachedTo ( v1, 0 )
+		setElementVisibleTo ( blip, root, false )
+		if ( v1 ~= bombHolder ) then
+			setElementVisibleTo ( blip, bombHolder, true )
+		end
 	end
 end
 
@@ -403,8 +409,12 @@ function()
 end )
 
 function collisisionWithPlayer ( otherPlayer )
-	val notTillbakaKaka = previousBombHolder == nil or otherPlayer ~= previousBombHolder
+	local notTillbakaKaka = previousBombHolder == nil or otherPlayer ~= previousBombHolder
 	if ( client == bombHolder and otherPlayer ~= nil and notTillbakaKaka) then
+		outputDebugString(inspect(previousBombHolder))
+		outputDebugString(inspect(client))
+		outputDebugString(inspect(bombHolder))
+		outputDebugString(inspect(otherPlayer))
 		resetPrevBombHolder()
 		previousBombHolder = otherPlayer
 		previousBombHolderResetter = setTimer(resetPrevBombHolder, 5000, 1)
