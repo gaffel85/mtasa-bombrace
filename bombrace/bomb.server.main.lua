@@ -8,6 +8,8 @@ local GAME_STATE_ACTIVE_GAME = 3
 local gameState = GAME_STATE_LOBBY
 
 local bombHolder
+local previousBombHolder
+local previousBombHolderResetter
 local bombMarker
 local bombEndTime
 local lobbyMarker
@@ -38,6 +40,8 @@ function selectRandomBombHolder()
 end
 
 function setBombHolder ( player )
+	resetPrevBombHolder()
+
 	-- Make old bomb holder invisible
 	local oldBombHolder = bombHolder
 	--[[if ( oldBombHolder ~= nil ) then
@@ -271,12 +275,20 @@ end
 
 function resetRoundVars()
 	bombHolder = nil
+	resetPrevBombHolder()
 	if (bombMarker ~= nil) then
 		destroyElement(bombMarker)
 		bombMarker = nil
 	end 
 end
 
+function resetPrevBombHolder()
+	previousBombHolder = nil
+	if (previousBombHolderResetter ~= nil ) then
+		killTimer ( previousBombHolderResetter )
+	end
+	previousBombHolderResetter = nil
+end
 
 function playerReady(player)
 	local players = getElementsByType ( "player" )
@@ -391,7 +403,11 @@ function()
 end )
 
 function collisisionWithPlayer ( otherPlayer )
-	if ( client == bombHolder and otherPlayer ~= nil) then
+	val notTillbakaKaka = previousBombHolder == nil or otherPlayer ~= previousBombHolder
+	if ( client == bombHolder and otherPlayer ~= nil and notTillbakaKaka) then
+		resetPrevBombHolder()
+		previousBombHolder = otherPlayer
+		previousBombHolderResetter = setTimer(resetPrevBombHolder, 5000, 1)
 		setBombHolder( otherPlayer )
 	end
 end
