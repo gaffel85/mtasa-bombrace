@@ -1,15 +1,24 @@
 local spawnPoints
 local currentSpawn = 1
+local mapLobbyMarker
+
+local GAME_STATE_LOBBY = 1
+local GAME_STATE_PREPARING_ROUND = 2
+local GAME_STATE_ACTIVE_GAME = 3
+local gameState = GAME_STATE_LOBBY
 
 local bombHolder
 local bombMarker
 local bombEndTime
+local lobbyMarker
 
 local BOMB_START_SECONDS = 120
 local SCORE_KEY = "Score"
 local PRESENTING_BOMB_HOLDER_TEXT_ID = 987771
 local PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID = 987772
+local LATE_JOIN_TEXT_ID = 987774
 local BOMB_TIMER_TEXT_ID = 987773
+local WINNER_TEXT_ID = 987775
 
 local cars = {411, 596}
 
@@ -20,6 +29,7 @@ function selectRandomBombHolder()
 	outputChatBox("Alive players: "..#players)
 	if ( #players > 1 ) then
 		local newBombHolder = players[math.random ( #players ) ]
+		resetBomb()
 		setBombHolder ( newBombHolder )
 	end
 end
@@ -72,37 +82,87 @@ function respawnAllPlayers()
 	end
 end
 
+function repairAllCars()
+	local players = getAlivePlayers ()
+	for k,v in ipairs(players) do
+		local veh = getPedOccupiedVehicle ( v )
+		if ( veh ~= nil ) then
+			fixVehicle ( veh )
+		end
+	end
+end
+
+function bombTimeLeft() 
+	local currentTime = getRealTime()
+	return bombEndTime - currentTime.timestamp
+end
+
 function tickBombTimer()
+	if (gameState == GAME_STATE_LOBBY) then
+		return
+	end
+
+	if (gameState == GAME_STATE_PREPARE_ROUND) then
+		timeLeft = bombTimeLeft()
+		if ( timeLeft < 0 ) then
+			
+		else
+			displayMessageForAll(BOMB_TIMER_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
+		end
+	end
+
 	local players = getElementsByType ( "player" )
 	if(bombHolder ~= nil and #players > 0) then
-		local currentTime = getRealTime()
-		local timeLeft = bombEndTime - currentTime.timestamp
+		timeLeft = bombTimeLeft()
 		if ( timeLeft < 0 ) then
-			local vehicle = getPedOccupiedVehicle ( bombHolder )
-			blowVehicle(vehicle)
-			resetBomb()
-			bombHolder = nil
-			clearMessageForAll(BOMB_TIMER_TEXT_ID)
-			setTimer(selectRandomBombHolder, 2000, 1)
+			blowBombHolder()
+		else
+			displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
 		end
-
-		displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
 	end
 end
 setTimer(tickBombTimer, 1000, 0)
 
+function blowBombHolder()
+	local lastBomdBolder = bombHolder
+	local vehicle = getPedOccupiedVehicle ( bombHolder )
+	blowVehicle(vehicle)
+	bombHolder = nil
+	clearMessageForAll(BOMB_TIMER_TEXT_ID)
+	setTimer(givePointsToAllAlive, 1000, 1)
+	setTimer(checkIfAnyAliveAndSelectNewBombHolder, 2000, 1, lastBomdBolder)
+end
+
+function checkIfAnyAliveAndSelectNewBombHolder(lastAlive)
+	local alivePlayers = getAlivePlayers ()
+	if ( #alivePlayers > 1 ) then
+		selectRandomBombHolder()
+	else
+		local message = getPlayerName ( lastAlive ).." won this round"
+		displayMessageForAll(WINNER_TEXT_ID, message, nil, nil, 5000, 0.5, 0.5, 0, 0, 255 )
+		setTimer(activeRoundFinished, 2000, 1)
+	end
+end
+
+function givePointsToAllAlive()
+	local players = getAlivePlayers ()
+	for k,player in ipairs(players) do
+		givePointsToPlayer ( player, 1 )
+	end
+end
+
+function givePointsToPlayer(player, points)
+	local score = getElementData( player, SCORE_KEY )
+	if ( score == false ) then
+		score = 0
+	end
+	score = score + points
+	setElementData( player, SCORE_KEY , score)
+end
+
 function resetBomb()
 	local time = getRealTime()
 	bombEndTime = time.timestamp + BOMB_START_SECONDS
-end
-
-function resetRoundVars()
-	bombHolder = nil
-end
-
-function newRound()
-	resetRoundVars()
-	respawnAllPlayers()
 end
 
 function arrayExists (tab, val)
@@ -122,19 +182,91 @@ function destroyElementsByType(elementType)
 	end
 end
 
+function removeLobbyMarker()
+	if (lobbyMarker ~= nil) then
+		destroyElement(lobbyMarker)
+	end
+	lobbyMarker = nil
+end
+
+function showLobbyMarker()
+	if (lobbyMarker == nil) then
+		local posX, posY, posZ = getElementPosition ( mapLobbyMarker )
+		local checkType = getElementData ( element, "type" )
+		local color = getElementData ( element, "color" )
+		local size = getElementData ( element, "size" )
+		lobbyMarker = createMarker(posX, posY, posZ, checkType, size, r, g, b)
+	end
+end
+
 function startGameMap( startedMap )
 	outputDebugString("startGameMap")
 	local mapRoot = getResourceRootElement( startedMap )
-    spawnPoints = getElementsByType ( "playerSpawnPoint" , mapRoot )
+	spawnPoints = getElementsByType ( "playerSpawnPoint" , mapRoot )
+	lobbyMarker = getElementsByType ( "lobbyMarker" , mapRoot ) [1]
   	resetGame()
 end
 addEventHandler("onGamemodeMapStart", getRootElement(), startGameMap)
 
+function joinHandler()
+	spawn(source)
+	handleLateJoin()
+	outputChatBox("Welcome to My Server", source)
+end
+addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
+
+function handleLateJoin()
+	if (gameState == GAME_STATE_ACTIVE_GAME) then
+		val message = getPlayerName(source).." joined a started game. He gets the bomb!"
+		displayMessageForAll(LATE_JOIN_TEXT_ID, message, nil, nil, 2000, 0.5, 0.5, 0, 255, 0 )
+		setTimer(setBombHolder, 2000, 1, source)
+	end
+end
+
+function leaveLobby()
+	gameState = GAME_STATE_PREPARE_ROUND
+	removeLobbyMarker()
+	repairAllCars()
+end
+
+function enterLobby()
+	gameState = GAME_STATE_LOBBY
+	resetRoundVars()
+	showLobbyMarker()
+end
+
+function startActiveRound() 
+	gameState = GAME_STATE_ACTIVE_GAME
+	repairAllCars()
+	resetBomb()
+	resetRoundVars()
+	selectRandomBombHolder()
+end
+
+function activeRoundFinished()
+	enterLobby()
+	respawnAllPlayers()
+end
+
 function resetGame()
-  resetBomb()
-  resetRoundVars()
-  respawnAllPlayers()
-  selectRandomBombHolder()
+	resetScore()
+	enterLobby()
+  	respawnAllPlayers()
+end
+
+function resetScore()
+	local players = getElementsByType ( "player" )
+	for k,v in ipairs(players) do
+		setElementData( v, SCORE_KEY , 0)
+	end
+end
+
+function resetRoundVars()
+	bombHolder = nil
+	if (bombMarker ~= nil) then
+		destroyElement(bombMarker)
+		bombMarker = nil
+	end 
 end
 
 function playerDied( ammo, attacker, weapon, bodypart )
@@ -225,15 +357,6 @@ addEventHandler("onResourceStart",getResourceRootElement(getThisResource()),
 function()
 	call(scoreboardRes,"addScoreboardColumn",SCORE_KEY)
 end )
-
-function joinHandler()
-	spawn(source)
-	if ( bombHolder == nil) then
-		selectRandomBombHolder()
-	end
-	outputChatBox("Welcome to My Server", source)
-end
-addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
 
 function collisisionWithPlayer ( otherPlayer )
 	if ( client == bombHolder and otherPlayer ~= nil) then
