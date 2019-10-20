@@ -49,3 +49,13 @@ function onCollision(collider)
 	end
 end
 addEventHandler("onClientVehicleCollision", getRootElement(), onCollision)
+
+function vehicleDamaged()
+	if ( localPlayer ~= bombHolder ) then
+		local health = getElementHealth ( getPedOccupiedVehicle ( localPlayer ) )
+		if ( health < 100 ) then
+			triggerServerEvent("lowOnHealth", resourceRoot)
+		end
+	end
+end
+addEventHandler("onClientVehicleDamage", getRootElement(), vehicleDamaged)

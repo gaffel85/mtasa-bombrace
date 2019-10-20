@@ -54,6 +54,7 @@ function setBombHolder ( player )
 	end
 	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
 	
+	fixVehicle (getPedOccupiedVehicle ( player ) )
 end
 
 -- Stop player from exiting vehicle
@@ -365,3 +366,11 @@ function collisisionWithPlayer ( otherPlayer )
 end
 addEvent( "onCollisionWithPlayer", true )
 addEventHandler( "onCollisionWithPlayer", getRootElement(), collisisionWithPlayer )
+
+function veryLowHealth ( )
+	if ( client ~= bombHolder) then
+		setBombHolder( client )
+	end
+end
+addEvent( "lowOnHealth", true )
+addEventHandler( "lowOnHealth", getRootElement(), veryLowHealth )
