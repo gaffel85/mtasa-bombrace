@@ -42,7 +42,6 @@ function selectRandomBombHolder()
 end
 
 function setBombHolder ( player )
-	resetPrevBombHolder()
 
 	-- Make old bomb holder invisible
 	local oldBombHolder = bombHolder

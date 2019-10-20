@@ -50,6 +50,35 @@ function onCollision(collider)
 end
 addEventHandler("onClientVehicleCollision", getRootElement(), onCollision)
 
+function flipIfNeeded(player)
+	local rx,ry,rz = getElementRotation ( player )
+	if rx > 90 and rx < 270 or ry > 90 and ry < 270 then
+		local posX, posY, posZ = getElementPosition ( player )
+		setElementPosition (player, posX, posY, posZ + 2)
+		setElementRotation (player, 0, 0, rz)
+	end
+end
+
+addEventHandler ( "onClientVehicleDamage", root, function ( )
+	if ( getElementHealth ( source ) < 400 ) then
+		
+		if ( source == bombHolder ) then
+			flipIfNeeded ( source )
+			fixVehicle ( source )
+		else
+			toggleAllControls ( false, true, false )
+			displayMessageForPlayer(929921111, "Car broken. Wait 5 sec.", 5000, 0.5, 0.5, 255, 0, 0 )
+
+			fixVehicle (source)
+
+			setTimer(function() 
+				toggleAllControls ( true, true, true )
+			end, 5000, 1)
+		end
+	end
+end )
+
+[[
 function vehicleDamaged()
 	if ( localPlayer ~= bombHolder ) then
 		local health = getElementHealth ( getPedOccupiedVehicle ( localPlayer ) )
@@ -59,3 +88,4 @@ function vehicleDamaged()
 	end
 end
 addEventHandler("onClientVehicleDamage", getRootElement(), vehicleDamaged)
+]]
