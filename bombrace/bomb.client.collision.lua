@@ -31,9 +31,16 @@ function bombHolderChanged ( oldBombHolder )
 	end
 
 	bombHolder = source
+	outputDebugString("New bombHolder: "..inspect(bombHolder))
 end
 addEvent("onBombHolderChanged", true)
 addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
+
+function timesAlmostUp2()
+	playSound("sounds/stress.mp3")
+end
+addEvent("timesAlmostUp", true)
+addEventHandler("timesAlmostUp", getRootElement(), timesAlmostUp2)
 
 
 function onCollision(collider)
@@ -50,26 +57,29 @@ function onCollision(collider)
 end
 addEventHandler("onClientVehicleCollision", getRootElement(), onCollision)
 
-function flipIfNeeded(player)
-	local rx,ry,rz = getElementRotation ( player )
+function flipIfNeeded(vehicle)
+	local rx,ry,rz = getElementRotation ( vehicle )
 	if rx > 90 and rx < 270 or ry > 90 and ry < 270 then
-		local posX, posY, posZ = getElementPosition ( player )
-		setElementPosition (player, posX, posY, posZ + 2)
-		setElementRotation (player, 0, 0, rz)
+		local posX, posY, posZ = getElementPosition ( vehicle )
+		setElementPosition (vehicle, posX, posY, posZ + 2)
+		setElementRotation (vehicle, 0, 0, rz)
 	end
 end
 
 addEventHandler ( "onClientVehicleDamage", root, function ( )
-	if ( getElementHealth ( source ) < 400 ) then
+	local vehicle = source
+	if ( getElementHealth ( vehicle ) < 400 ) then
 		
-		if ( source == bombHolder ) then
-			flipIfNeeded ( source )
-			fixVehicle ( source )
+		local driver = getVehicleOccupant ( vehicle )
+		if ( driver == bombHolder ) then
+			flipIfNeeded ( vehicle )
+			fixVehicle ( vehicle )
 		else
 			toggleAllControls ( false, true, false )
-			displayMessageForPlayer(929921111, "Car broken. Wait 5 sec.", 5000, 0.5, 0.5, 255, 0, 0 )
+			--displayMessageForPlayer(929921111, "Car broken. Wait 5 sec.", 5000, 0.5, 0.5, 255, 0, 0 )
 
-			fixVehicle (source)
+			fixVehicle (vehicle)
+			flipIfNeeded ( vehicle )
 
 			setTimer(function() 
 				toggleAllControls ( true, true, true )

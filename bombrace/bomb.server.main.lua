@@ -15,7 +15,7 @@ local bombEndTime
 local lobbyMarker
 local participants = {}
 
-local BOMB_START_SECONDS = 120
+local BOMB_START_SECONDS = 1200
 local PREPARE_TIME = 10
 
 local SCORE_KEY = "Score"
@@ -27,7 +27,7 @@ local WINNER_TEXT_ID = 987775
 local PLAYER_READY_TEXT_ID = 987776
 local LEAVING_LOBBY_TEXT_ID = 987777
 
-local cars = {411, 596}
+local cars = {415, 596}
 
 scoreboardRes = getResourceFromName( "scoreboard" )
 
@@ -78,7 +78,7 @@ function spawn(thePlayer)
 	currentSpawn = currentSpawn % #spawnPoints + 1
   	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
   	local vehicle = createVehicle(cars[1], posX, posY, posZ, 0, 0, 0, "BOMBER")
-	spawnPlayer(thePlayer, 0, 0, 0, 0, 253)
+	spawnPlayer(thePlayer, 0, 0, 0, 0, 285)
 	setTimer(function()
 		warpPedIntoVehicle(thePlayer, vehicle)
 		fadeCamera(thePlayer, true)
@@ -125,6 +125,10 @@ function tickBombTimer()
 	local players = getElementsByType ( "player" )
 	if(bombHolder ~= nil and #players > 0) then
 		timeLeft = bombTimeLeft()
+		if (timeLeft < 11 and timeLeft > 9) then
+			triggerClientEvent("timesAlmostUp", bombHolder)
+		end
+
 		if ( timeLeft < 0 ) then
 			blowBombHolder()
 		else
@@ -172,8 +176,12 @@ function givePointsToPlayer(player, points)
 end
 
 function resetBomb()
+	setBombTime(BOMB_START_SECONDS)
+end
+
+function setBombTime(duration)
 	local time = getRealTime()
-	bombEndTime = time.timestamp + BOMB_START_SECONDS
+	bombEndTime = time.timestamp + duration
 end
 
 function arrayExists (tab, val)
@@ -302,8 +310,8 @@ function playerReady(player)
 		displayMessageForAll(PLAYER_READY_TEXT_ID, getPlayerName(player).." is ready", nil, nil, 5000, 0.5, 0.9)
 
 		if #participants == #players then
-			displayMessageForAll(LEAVING_LOBBY_TEXT_ID, "Game will start in 5 sec", nil, nil, 5000, 0.5, 0.5, 88, 255, 120)
-			setTimer( leaveLobby, 5000, 1)
+			displayMessageForAll(LEAVING_LOBBY_TEXT_ID, "The bomb holder will be selected soon", nil, nil, 5000, 0.5, 0.5, 88, 255, 120)
+			leaveLobby()
 		end
 	end
 end
@@ -407,15 +415,39 @@ function()
 	call(scoreboardRes,"addScoreboardColumn",SCORE_KEY)
 end )
 
+addCommandHandler ( "changetime",
+    function ( thePlayer, command, time )
+        local timeNumber = tonumber ( time )
+		if ( timeNumber > 0 ) then
+			setBombTime(timeNumber)
+		end
+    end
+)
+
+addCommandHandler ( "changeveh",
+    function ( thePlayer, command, newModel )
+        local theVehicle = getPedOccupiedVehicle ( thePlayer ) -- get the vehicle the player is in
+        newModel = tonumber ( newModel )                          -- try to convert the string argument to a number
+        if theVehicle and newModel then                           -- make sure the player is in a vehicle and specified a number
+            setElementModel ( theVehicle, newModel )
+        end
+    end
+)
+
+addCommandHandler ( "fixit",
+    function ( thePlayer, command, newModel )
+        local theVehicle = getPedOccupiedVehicle ( thePlayer )
+        if theVehicle then
+            fixVehicle ( theVehicle )
+        end
+    end
+)
+
 function collisisionWithPlayer ( otherPlayer )
 	local notTillbakaKaka = previousBombHolder == nil or otherPlayer ~= previousBombHolder
 	if ( client == bombHolder and otherPlayer ~= nil and notTillbakaKaka) then
-		outputDebugString(inspect(previousBombHolder))
-		outputDebugString(inspect(client))
-		outputDebugString(inspect(bombHolder))
-		outputDebugString(inspect(otherPlayer))
 		resetPrevBombHolder()
-		previousBombHolder = otherPlayer
+		previousBombHolder = client
 		previousBombHolderResetter = setTimer(resetPrevBombHolder, 5000, 1)
 		setBombHolder( otherPlayer )
 	end
