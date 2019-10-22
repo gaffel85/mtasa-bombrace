@@ -1,5 +1,7 @@
 local bombHolder = nil
 local oldHolders = {}
+local damageBar = nil
+local damageText = nil
 
 -- Since we listen for events on the root element we can use the bombHolder as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
@@ -67,15 +69,31 @@ function flipIfNeeded(vehicle)
 end
 
 addEventHandler ( "onClientVehicleDamage", root, function ( )
+	if (damageBar == nil) then
+		damageBar = guiCreateProgressBar( 0.8, 0.3, 0.1, 0.03, true, nil ) --create the gui-progressbar
+		damageLabel = guiCreateLabel( 0, 0,1,1,"Damage",true, damageBar)
+		guiLabelSetColor ( damageLabel, 255, 0, 0 )
+		guiLabelSetHorizontalAlign ( damageLabel, "center" )
+		guiLabelSetVerticalAlign ( damageLabel, "center" )
+		guiSetFont(damageLabel, "default-bold-small")
+	end
+
 	local vehicle = source
-	if ( getElementHealth ( vehicle ) < 400 ) then
+	local health = getElementHealth ( vehicle )
+	guiProgressBarSetProgress(damageBar, 100 * (math.max(health, 250) - 250) / 750)
+	if ( health < 250 ) then
 		
 		local driver = getVehicleOccupant ( vehicle )
 		if ( driver == bombHolder ) then
+			setVehicleDamageProof ( vehicle , true )
 			flipIfNeeded ( vehicle )
 			fixVehicle ( vehicle )
+			setTimer(function() 
+				setVehicleDamageProof ( vehicle , false )
+			end, 5000, 1)
 		else
 			toggleAllControls ( false, true, false )
+			setVehicleDamageProof ( vehicle , true )
 			--displayMessageForPlayer(929921111, "Car broken. Wait 5 sec.", 5000, 0.5, 0.5, 255, 0, 0 )
 
 			fixVehicle (vehicle)
@@ -83,19 +101,10 @@ addEventHandler ( "onClientVehicleDamage", root, function ( )
 
 			setTimer(function() 
 				toggleAllControls ( true, true, true )
+				setVehicleDamageProof ( vehicle , false )
 			end, 5000, 1)
 		end
 	end
 end )
 
-[[
-function vehicleDamaged()
-	if ( localPlayer ~= bombHolder ) then
-		local health = getElementHealth ( getPedOccupiedVehicle ( localPlayer ) )
-		if ( health < 300 ) then
-			triggerServerEvent("lowOnHealth", resourceRoot)
-		end
-	end
-end
-addEventHandler("onClientVehicleDamage", getRootElement(), vehicleDamaged)
-]]
+
