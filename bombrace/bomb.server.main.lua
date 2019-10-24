@@ -10,6 +10,7 @@ local gameState = GAME_STATE_LOBBY
 local BOMB_START_SECONDS = 1200
 local BOOST_COOLDOWN = 40
 local PREPARE_TIME = 3
+local TILLBAKAKAKA_TIME = 10
 
 local bombHolder
 local previousBombHolder
@@ -67,6 +68,8 @@ function setBombHolder ( player )
 	end
 	setBoostCooldown(5)
 	bombHolder = player
+	makeVisible(bombHolder)
+	makeInvisible(oldBombHolder, TILLBAKAKAKA_TIME)
 	triggerClientEvent("onBombHolderChanged", player, oldBombHolder)
 
 	--displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )

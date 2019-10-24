@@ -8,7 +8,7 @@ local boosterLabel = nil
 -- Since we listen for events on the root element we can use the bombHolder as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
 function bombHolderChanged ( oldBombHolder )
-	if ( oldBombHolder ~= nil ) then
+	--[[if ( oldBombHolder ~= nil ) then
 		
 		if ( localPlayer == oldBombHolder ) then
 			setElementAlpha( getPedOccupiedVehicle( oldBombHolder ), 100 )
@@ -32,7 +32,7 @@ function bombHolderChanged ( oldBombHolder )
 			setPlayerNametagShowing ( oldest, true )
 			setElementCollidableWith( getPedOccupiedVehicle( localPlayer ), getPedOccupiedVehicle( oldest ) , true)
 		end, 10000, 1)
-	end
+	end]]
 
 	bombHolder = source
 	outputDebugString("New bombHolder: "..inspect(bombHolder))
