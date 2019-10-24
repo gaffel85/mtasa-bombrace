@@ -7,16 +7,19 @@ local GAME_STATE_PREPARING_ROUND = 2
 local GAME_STATE_ACTIVE_GAME = 3
 local gameState = GAME_STATE_LOBBY
 
+local BOMB_START_SECONDS = 1200
+local BOOST_COOLDOWN = 40
+local PREPARE_TIME = 3
+
 local bombHolder
 local previousBombHolder
 local previousBombHolderResetter
+local bombHolderBostCooldown
+local boosterAdded = false
 local bombMarker
 local bombEndTime
 local lobbyMarker
 local participants = {}
-
-local BOMB_START_SECONDS = 1200
-local PREPARE_TIME = 10
 
 local SCORE_KEY = "Score"
 local PRESENTING_BOMB_HOLDER_TEXT_ID = 987771
@@ -41,6 +44,11 @@ function selectRandomBombHolder()
 	end
 end
 
+function resetBoosterCountdown()
+	boosterAdded = false
+	setBoostCooldown(BOOST_COOLDOWN)
+end
+
 function setBombHolder ( player )
 
 	-- Make old bomb holder invisible
@@ -52,6 +60,12 @@ function setBombHolder ( player )
 		end, 10000, 1)
 	end ]]
 
+	boosterAdded = false
+	bindKey(player, "lctrl", "down", resetBoosterCountdown)
+	if ( oldBombHolder ~= nil ) then
+		unbindKey(oldBombHolder, "lctrl", "down", resetBoosterCountdown)
+	end
+	setBoostCooldown(5)
 	bombHolder = player
 	triggerClientEvent("onBombHolderChanged", player, oldBombHolder)
 
@@ -138,6 +152,67 @@ function tickBombTimer()
 end
 setTimer(tickBombTimer, 1000, 0)
 
+function boostCooldownLeft() 
+	local currentTime = getRealTime()
+	return bombHolderBostCooldown - currentTime.timestamp
+end
+
+function tickCooldown()
+	if (gameState ~= GAME_STATE_ACTIVE_GAME) then
+		return
+	end
+
+	local timeLeft = boostCooldownLeft()
+	if (timeLeft >= 0 and boosterAdded == false and bombHolder ~= nil) then
+		triggerClientEvent("boosterCooldownTick", bombHolder, timeLeft, BOOST_COOLDOWN)
+	end
+
+	if ( timeLeft <= 0 and boosterAdded == false ) then
+		local vehicle = getPedOccupiedVehicle (bombHolder)
+		if (vehicle ~= nil) then
+			addVehicleUpgrade(vehicle, 1009)
+			boosterAdded = true
+			displayMessageForAll(3243243, "Booster added", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
+		end
+	end
+end
+setTimer(tickCooldown, 1000, 0)
+
+function bombTimeLeft() 
+	local currentTime = getRealTime()
+	return bombEndTime - currentTime.timestamp
+end
+
+function tickBombTimer()
+	if (gameState == GAME_STATE_LOBBY) then
+		return
+	end
+
+	if (gameState == GAME_STATE_PREPARE_ROUND) then
+		timeLeft = bombTimeLeft()
+		if ( timeLeft < 0 ) then
+			startActiveRound()
+		else
+			displayMessageForAll(BOMB_TIMER_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
+		end
+	end
+
+	local players = getElementsByType ( "player" )
+	if(bombHolder ~= nil and #players > 0) then
+		timeLeft = bombTimeLeft()
+		if (timeLeft < 11 and timeLeft > 9) then
+			triggerClientEvent("timesAlmostUp", bombHolder)
+		end
+
+		if ( timeLeft < 0 ) then
+			blowBombHolder()
+		else
+			displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
+		end
+	end
+end
+setTimer(tickBombTimer, 1000, 0)
+
 function blowBombHolder()
 	local lastBomdBolder = bombHolder
 	local vehicle = getPedOccupiedVehicle ( bombHolder )
@@ -182,6 +257,11 @@ end
 function setBombTime(duration)
 	local time = getRealTime()
 	bombEndTime = time.timestamp + duration
+end
+
+function setBoostCooldown(duration)
+	local time = getRealTime()
+	bombHolderBostCooldown = time.timestamp + duration
 end
 
 function arrayExists (tab, val)
