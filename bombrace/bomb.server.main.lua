@@ -46,14 +46,19 @@ function selectRandomBombHolder()
 end
 
 function resetBoosterCountdown()
-	boosterAdded = false
-	setBoostCooldown(BOOST_COOLDOWN)
+	if (boosterAdded) then
+		boosterAdded = false
+		setBoostCooldown(BOOST_COOLDOWN)
+	end
 end
 
 function setBombHolder ( player )
 
 	-- Make old bomb holder invisible
 	local oldBombHolder = bombHolder
+	if (oldBombHolder ~= nil) then
+		removeVehicleUpgrade( getPedOccupiedVehicle (oldBombHolder), 1009)
+	end
 	--[[if ( oldBombHolder ~= nil ) then
 		local result = setElementAlpha( oldBombHolder, 140 )
 		setTimer(function()
@@ -66,6 +71,7 @@ function setBombHolder ( player )
 	if ( oldBombHolder ~= nil ) then
 		unbindKey(oldBombHolder, "lctrl", "down", resetBoosterCountdown)
 	end
+
 	setBoostCooldown(5)
 	bombHolder = player
 	makeVisible(bombHolder)
