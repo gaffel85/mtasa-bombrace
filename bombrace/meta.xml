@@ -4,8 +4,13 @@
 	<include resource="votemanager"/>
 	<include resource="easytext" />
 
+	<script src="bomb.server.properties.lua" />
+	<script src="bomb.server.texts.lua" />
 	<script src="bomb.server.main.lua" />
     <script src="bomb.client.collision.lua" type="client" />
+
+	<script src="bomb.server.nitro.lua" />
+	<script src="bomb.client.nitro.lua" />
 
 	<script src="bomb.server.invisible.lua" />
     <script src="bomb.client.invisible.lua" type="client" />

@@ -1,39 +1,10 @@
 local bombHolder = nil
-local oldHolders = {}
 local damageBar = nil
 local damageLabel = nil
-local boosterBar = nil
-local boosterLabel = nil
 
 -- Since we listen for events on the root element we can use the bombHolder as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
 function bombHolderChanged ( oldBombHolder )
-	--[[if ( oldBombHolder ~= nil ) then
-		
-		if ( localPlayer == oldBombHolder ) then
-			setElementAlpha( getPedOccupiedVehicle( oldBombHolder ), 100 )
-			setElementAlpha( oldBombHolder, 150 )
-		else
-			setElementAlpha( getPedOccupiedVehicle( oldBombHolder ), 0 )
-			setElementAlpha( oldBombHolder, 0 )
-			setElementAlpha( getPedOccupiedVehicle( oldBombHolder ), 0 )
-			setVehicleOverrideLights ( oldBombHolder, 1 ) 
-			setElementCollidableWith( getPedOccupiedVehicle( localPlayer ), getPedOccupiedVehicle( oldBombHolder ) , false)
-			setPlayerNametagShowing ( oldBombHolder, false )
-		end
-		
-
-		table.insert(oldHolders, oldBombHolder)
-		setTimer(function()
-			local oldest = table.remove(oldHolders, 1)
-			setElementAlpha( getPedOccupiedVehicle( oldest ), 255 )
-			setElementAlpha( oldest, 255 )
-			setVehicleOverrideLights ( oldest, 0 ) 
-			setPlayerNametagShowing ( oldest, true )
-			setElementCollidableWith( getPedOccupiedVehicle( localPlayer ), getPedOccupiedVehicle( oldest ) , true)
-		end, 10000, 1)
-	end]]
-
 	bombHolder = source
 	outputDebugString("New bombHolder: "..inspect(bombHolder))
 end
@@ -45,23 +16,6 @@ function timesAlmostUp2()
 end
 addEvent("timesAlmostUp", true)
 addEventHandler("timesAlmostUp", getRootElement(), timesAlmostUp2)
-
-function tickBoosterCooldown(timeLeft, totalTime)
-	if (boosterBar == nil) then
-		boosterBar = guiCreateProgressBar( 0.8, 0.35, 0.1, 0.03, true, nil ) --create the gui-progressbar
-		boosterLabel = guiCreateLabel( 0, 0,1,1,"Booster",true, boosterBar)
-		guiLabelSetColor ( boosterLabel, 0, 128, 0 )
-		guiLabelSetHorizontalAlign ( boosterLabel, "center" )
-		guiLabelSetVerticalAlign ( boosterLabel, "center" )
-		guiSetFont(boosterLabel, "default-bold-small")
-	end
-
-	local progress = 100 * (totalTime - timeLeft)/totalTime
-	guiProgressBarSetProgress(boosterBar, progress)
-end
-addEvent("boosterCooldownTick", true)
-addEventHandler("boosterCooldownTick", getRootElement(), tickBoosterCooldown)
-
 
 function onCollision(collider)
 	if ( collider ~= nil and localPlayer == bombHolder) then

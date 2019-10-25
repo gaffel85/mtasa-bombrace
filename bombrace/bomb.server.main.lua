@@ -7,33 +7,21 @@ local GAME_STATE_PREPARING_ROUND = 2
 local GAME_STATE_ACTIVE_GAME = 3
 local gameState = GAME_STATE_LOBBY
 
-local BOMB_START_SECONDS = 1200
-local BOOST_COOLDOWN = 40
-local PREPARE_TIME = 3
-local TILLBAKAKAKA_TIME = 10
+local EVENT_BOMB_HOLDER_CHANGED = "bombHolderChanged"
 
 local bombHolder
 local previousBombHolder
 local previousBombHolderResetter
-local bombHolderBostCooldown
-local boosterAdded = false
 local bombMarker
 local bombEndTime
 local lobbyMarker
 local participants = {}
 
 local SCORE_KEY = "Score"
-local PRESENTING_BOMB_HOLDER_TEXT_ID = 987771
-local PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID = 987772
-local LATE_JOIN_TEXT_ID = 987774
-local BOMB_TIMER_TEXT_ID = 987773
-local WINNER_TEXT_ID = 987775
-local PLAYER_READY_TEXT_ID = 987776
-local LEAVING_LOBBY_TEXT_ID = 987777
 
 local cars = {415, 596}
 
-addEvent("bombHolderChanged")
+addEvent(EVENT_BOMB_HOLDER_CHANGED)
 
 scoreboardRes = getResourceFromName( "scoreboard" )
 
@@ -44,13 +32,6 @@ function selectRandomBombHolder()
 		local newBombHolder = players[math.random ( #players ) ]
 		resetBomb()
 		setBombHolder ( newBombHolder )
-	end
-end
-
-function resetBoosterCountdown()
-	if (boosterAdded) then
-		boosterAdded = false
-		setBoostCooldown(BOOST_COOLDOWN)
 	end
 end
 
@@ -65,25 +46,19 @@ function setBombHolder ( player )
 		removeVehicleUpgrade( getPedOccupiedVehicle (oldBombHolder), 1009)
 	end
 
-	boosterAdded = false
-	bindKey(player, "lctrl", "down", resetBoosterCountdown)
-	if ( oldBombHolder ~= nil ) then
-		unbindKey(oldBombHolder, "lctrl", "down", resetBoosterCountdown)
-	end
-
-	setBoostCooldown(5)
 	bombHolder = player
 	makeVisible(bombHolder)
 	makeInvisible(oldBombHolder, TILLBAKAKAKA_TIME)
 	triggerClientEvent("onBombHolderChanged", player, oldBombHolder)
 
-	--displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
+	showPresentBombHolder(bombHolder)
 
 	if(bombMarker == nil ) then
 		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
 	end
 	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
 	fixVehicle (getPedOccupiedVehicle ( player ) )
+	triggerEvent(EVENT_BOMB_HOLDER_CHANGED, bombHolder, oldBombHolder)
 end
 
 -- Stop player from exiting vehicle
@@ -127,62 +102,6 @@ function bombTimeLeft()
 	return bombEndTime - currentTime.timestamp
 end
 
-function tickBombTimer()
-	if (gameState == GAME_STATE_LOBBY) then
-		return
-	end
-
-	if (gameState == GAME_STATE_PREPARE_ROUND) then
-		timeLeft = bombTimeLeft()
-		if ( timeLeft < 0 ) then
-			startActiveRound()
-		else
-			displayMessageForAll(BOMB_TIMER_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
-		end
-	end
-
-	local players = getElementsByType ( "player" )
-	if(bombHolder ~= nil and #players > 0) then
-		timeLeft = bombTimeLeft()
-		if (timeLeft < 11 and timeLeft > 9) then
-			triggerClientEvent("timesAlmostUp", bombHolder)
-		end
-
-		if ( timeLeft < 0 ) then
-			blowBombHolder()
-		else
-			displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
-		end
-	end
-end
-setTimer(tickBombTimer, 1000, 0)
-
-function boostCooldownLeft() 
-	local currentTime = getRealTime()
-	return bombHolderBostCooldown - currentTime.timestamp
-end
-
-function tickCooldown()
-	if (gameState ~= GAME_STATE_ACTIVE_GAME) then
-		return
-	end
-
-	local timeLeft = boostCooldownLeft()
-	if (timeLeft >= 0 and boosterAdded == false and bombHolder ~= nil) then
-		triggerClientEvent("boosterCooldownTick", bombHolder, timeLeft, BOOST_COOLDOWN)
-	end
-
-	if ( timeLeft <= 0 and boosterAdded == false ) then
-		local vehicle = getPedOccupiedVehicle (bombHolder)
-		if (vehicle ~= nil) then
-			addVehicleUpgrade(vehicle, 1009)
-			boosterAdded = true
-			displayMessageForAll(3243243, "Booster added", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
-		end
-	end
-end
-setTimer(tickCooldown, 1000, 0)
-
 function bombTimeLeft() 
 	local currentTime = getRealTime()
 	return bombEndTime - currentTime.timestamp
@@ -198,7 +117,7 @@ function tickBombTimer()
 		if ( timeLeft < 0 ) then
 			startActiveRound()
 		else
-			displayMessageForAll(BOMB_TIMER_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
+			showPrepareRoundTimer()
 		end
 	end
 
@@ -212,7 +131,7 @@ function tickBombTimer()
 		if ( timeLeft < 0 ) then
 			blowBombHolder()
 		else
-			displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
+			showBombTimer(timeLeft)
 		end
 	end
 end
@@ -223,7 +142,7 @@ function blowBombHolder()
 	local vehicle = getPedOccupiedVehicle ( bombHolder )
 	blowVehicle(vehicle)
 	bombHolder = nil
-	clearMessageForAll(BOMB_TIMER_TEXT_ID)
+	hideBombTimer()	
 	setTimer(givePointsToAllAlive, 1000, 1)
 	setTimer(checkIfAnyAliveAndSelectNewBombHolder, 2000, 1, lastBomdBolder)
 end
@@ -233,8 +152,7 @@ function checkIfAnyAliveAndSelectNewBombHolder(lastAlive)
 	if ( #alivePlayers > 1 ) then
 		selectRandomBombHolder()
 	else
-		local message = getPlayerName ( lastAlive ).." won this round"
-		displayMessageForAll(WINNER_TEXT_ID, message, nil, nil, 5000, 0.5, 0.5, 0, 0, 255 )
+		showWinner(lastAlive)
 		setTimer(activeRoundFinished, 2000, 1)
 	end
 end
@@ -262,11 +180,6 @@ end
 function setBombTime(duration)
 	local time = getRealTime()
 	bombEndTime = time.timestamp + duration
-end
-
-function setBoostCooldown(duration)
-	local time = getRealTime()
-	bombHolderBostCooldown = time.timestamp + duration
 end
 
 function arrayExists (tab, val)
@@ -316,14 +229,13 @@ addEventHandler("onGamemodeMapStart", getRootElement(), startGameMap)
 function joinHandler()
 	spawn(source)
 	handleLateJoin()
-	outputChatBox("Welcome to My Server", source)
+	outputChatBox("Welcome to Bomb Race!", source)
 end
 addEventHandler("onPlayerJoin", getRootElement(), joinHandler)
 
 function handleLateJoin()
 	if (gameState == GAME_STATE_ACTIVE_GAME) then
-		local message = getPlayerName(source).." joined a started game. He gets the bomb!"
-		displayMessageForAll(LATE_JOIN_TEXT_ID, message, nil, nil, 2000, 0.5, 0.5, 0, 255, 0 )
+		showLateJoinMessage()
 		setTimer(setBombHolder, 2000, 1, source)
 	end
 end
@@ -391,11 +303,10 @@ function playerReady(player)
 	if arrayExists(participants, player) == false then
 
 		table.insert(participants, player)
-		clearMessageForAll(PLAYER_READY_TEXT_ID)
-		displayMessageForAll(PLAYER_READY_TEXT_ID, getPlayerName(player).." is ready", nil, nil, 5000, 0.5, 0.9)
+		showPlayerReady(player)
 
 		if #participants == #players then
-			displayMessageForAll(LEAVING_LOBBY_TEXT_ID, "The bomb holder will be selected soon", nil, nil, 5000, 0.5, 0.5, 88, 255, 120)
+			showLeavingLobbyMessage()
 			leaveLobby()
 		end
 	end
@@ -430,47 +341,6 @@ function commitSuicide ( sourcePlayer )
 	killPed ( sourcePlayer, sourcePlayer )
 end
 addCommandHandler ( "kill", commitSuicide )
-
-function displayMessageForAll(textId, text, specialPlayer, specialText, displayTime, posX, posY, r, g, b, alpha, scale)
-	local players = getElementsByType ( "player" )
-	for k,v in ipairs(players) do
-		clearMessageForPlayer ( v, textId )
-		if(v ~= specialPlayer) then
-			displayMessageForPlayer ( v, textId, text, displayTime, posX, posY, r, g, b, alpha, scale )
-		end
-	end
-	if specialPlayer ~= nil and  specialText ~= nil then
-		displayMessageForPlayer ( specialPlayer, textId, specialText, displayTime, posX, posY, r, g, b, alpha, scale )
-	end
-end
-
-function clearMessageForAll ( textID , exceptPlayer)
-	local players = getElementsByType ( "player" )
-	for k,v in ipairs(players) do
-		if(v ~= exceptPlayer) then
-			clearMessageForPlayer( v, textID)
-		end
-	end
-end
-
-function displayMessageForPlayer ( player, ID, message, displayTime, posX, posY, r, g, b, alpha, scale )
-	assert ( player and ID and message )
-	local easyTextResource = getResourceFromName ( "easytext" )
-	displayTime = displayTime or 5000
-	posX = posX or 0.5
-	posY = posY or 0.5
-	r = r or 255
-	g = g or 127
-	b = b or 0
-	-- display message for everyone
-	outputConsole ( message, player )
-	call ( easyTextResource, "displayMessageForPlayer", player, ID, message, displayTime, posX, posY, r, g, b, alpha, scale )
-end
-
-function clearMessageForPlayer ( player, ID )
-	assert ( player and ID )
-	call ( getResourceFromName ( "easytext" ), "clearMessageForPlayer", player, ID )
-end
 
 addEvent("onDisplayClientText", true)
 addEventHandler ( "onDisplayClientText", resourceRoot, displayMessageForPlayer)
