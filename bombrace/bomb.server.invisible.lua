@@ -1,5 +1,21 @@
 local playerVisibleState = {}
 
+--==================== Helpers ========================
+
+local function has_value (tab, val)
+	if (tab == nil) then
+		return false
+	end
+
+    for index, value in ipairs(tab) do
+        if value == val then
+            return true
+        end
+    end
+
+    return false
+end
+
 function getGhosts()
 	local ghosts = {}
 	for player,state in pairs(playerVisibleState) do
@@ -8,6 +24,23 @@ function getGhosts()
 		end
 	end
 end
+
+function getHardPlayers(currentPlayer)
+	local hardPlayers = {}
+	local ghosts = getGhosts()
+
+	local players = getElementsByType ( "player" )
+	for k,otherPlayer in ipairs(players) do
+		local notAGhost = has_value(ghosts, otherPlayer) == false
+		if (otherPlayer ~= currentPlayer and notAGhost) then
+			table.insert(hardPlayers, otherPlayer)
+		end
+	end
+
+	return hardPlayers
+end
+
+--^^^^^^^^^^^^^^^^^^^^ Helpers ^^^^^^^^^^^^^^^^^^^^
 
 function makeInvisible(player, time, ghost)
 	ghost = ghost or true
@@ -18,7 +51,8 @@ function makeInvisible(player, time, ghost)
 	local currentState = playerVisibleState[player]
 	playerVisibleState[player] = { ghost = ghost, time = getEndTime(time) }
 	if ( currentState == nil or currentState.time < 0 ) then
-		triggerClientEvent("clientMakeInvisible", player, ghost, getGhosts())
+		triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player))
+		showPlayerBlips()
 	end
 end
 
@@ -29,7 +63,8 @@ function makeVisible(player)
 
 	local currentState = playerVisibleState[player]
 	if ( currentState ~= nil and currentState.time > 0 ) then
-		triggerClientEvent("clientMakeVisible", player, getGhosts())
+		triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
+		showPlayerBlips()
 	end
 end
 
@@ -53,9 +88,22 @@ function periodicVisibleCheck()
 			timeLeft = invisibleTimeLeft(currentState.time)
 			if ( timeLeft <= 0 ) then
 				playerVisibleState[player] =  { ghost = false, time = -1 }
-				triggerClientEvent("clientMakeVisible", player, getGhosts())
+				triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
+				showPlayerBlips()
 			end
 		end
 	end
 end
 setTimer(periodicVisibleCheck, 1000, 0)
+
+function showPlayerBlips()
+	destroyElementsByType ("blip")
+	local bombHolder = getBombHolder()
+	for _,player in ipairs(getHardPlayers( bombHolder )) do	
+		local blip = createBlipAttachedTo ( player, 0 )
+		setElementVisibleTo ( blip, root, false )
+		if ( player ~= bombHolder ) then
+			setElementVisibleTo ( blip, bombHolder, true )
+		end
+	end
+end

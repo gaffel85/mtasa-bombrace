@@ -1,34 +1,6 @@
-local function has_value (tab, val)
-	if (tab == nil) then
-		return false
-	end
-
-    for index, value in ipairs(tab) do
-        if value == val then
-            return true
-        end
-    end
-
-    return false
-end
-
-function getHardPlayers(player, ghosts)
-	local hardPlayers = {}
-
-	local players = getElementsByType ( "player" )
-	for k,otherPlayer in ipairs(players) do
-		local notAGhost = has_value(ghosts, otherPlayer) == false
-		if (otherPlayer ~= player and notAGhost) then
-			table.insert(hardPlayers, otherPlayer)
-		end
-	end
-
-	return hardPlayers
-end
-
 -- Since we listen for events on the root element we can use the bombHolder as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
-function onClientMakeInvisible (isGhost, otherGhosts)
+function onClientMakeInvisible (isGhost, hardPlayers)
 	local player = source
 		
 		local vehicle = getPedOccupiedVehicle( player )
@@ -37,7 +9,7 @@ function onClientMakeInvisible (isGhost, otherGhosts)
 			setElementAlpha( player, 0 )
 
 			if (isGhost) then
-				for _, hardPlayer in ipairs(getHardPlayers(player, otherGhosts)) do
+				for _, hardPlayer in ipairs(hardPlayers) do
 					setElementCollidableWith( vehicle, getPedOccupiedVehicle ( hardPlayer ) , false)
 				end
 			end
@@ -57,14 +29,14 @@ end
 addEvent("clientMakeInvisible", true)
 addEventHandler("clientMakeInvisible", getRootElement(), onClientMakeInvisible)
 
-function onClientMakeVisible (otherGhosts)
+function onClientMakeVisible (hardPlayers)
 	local player = source
 	local vehicle = getPedOccupiedVehicle( player )
 	setElementAlpha( vehicle, 255 )
 	setElementAlpha( player, 255 )
 	setVehicleOverrideLights ( vehicle, 0 ) 
 	setPlayerNametagShowing ( player, true )
-	for _, hardPlayer in ipairs(getHardPlayers(player, otherGhosts)) do
+	for _, hardPlayer in ipairs(hardPlayers) do
 		setElementCollidableWith( vehicle, getPedOccupiedVehicle (hardPlayer ) , true)
 	end
 	

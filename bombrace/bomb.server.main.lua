@@ -33,6 +33,8 @@ local LEAVING_LOBBY_TEXT_ID = 987777
 
 local cars = {415, 596}
 
+addEvent("bombHolderChanged")
+
 scoreboardRes = getResourceFromName( "scoreboard" )
 
 function selectRandomBombHolder()
@@ -52,19 +54,16 @@ function resetBoosterCountdown()
 	end
 end
 
+function getBombHolder()
+	return bombHolder
+end
+
 function setBombHolder ( player )
 
-	-- Make old bomb holder invisible
 	local oldBombHolder = bombHolder
 	if (oldBombHolder ~= nil) then
 		removeVehicleUpgrade( getPedOccupiedVehicle (oldBombHolder), 1009)
 	end
-	--[[if ( oldBombHolder ~= nil ) then
-		local result = setElementAlpha( oldBombHolder, 140 )
-		setTimer(function()
-			setElementAlpha( oldBombHolder, 255 )
-		end, 10000, 1)
-	end ]]
 
 	boosterAdded = false
 	bindKey(player, "lctrl", "down", resetBoosterCountdown)
@@ -84,9 +83,6 @@ function setBombHolder ( player )
 		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
 	end
 	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
-
-	addPlayerBlips()
-	
 	fixVehicle (getPedOccupiedVehicle ( player ) )
 end
 
@@ -417,18 +413,6 @@ function playerDied( ammo, attacker, weapon, bodypart )
 	
 end
 addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
-
-function addPlayerBlips()
-	local players = getElementsByType ( "player" )
-	for k1,v1 in ipairs(players) do	
-		local blip = nil
-		blip = createBlipAttachedTo ( v1, 0 )
-		setElementVisibleTo ( blip, root, false )
-		if ( v1 ~= bombHolder ) then
-			setElementVisibleTo ( blip, bombHolder, true )
-		end
-	end
-end
 
 function coordsFromEdl(element)
 	local posX = getElementData ( element, "posX" )
