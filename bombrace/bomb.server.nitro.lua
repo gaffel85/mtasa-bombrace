@@ -48,7 +48,7 @@ function tickCooldown()
 		if (vehicle ~= nil) then
 			addVehicleUpgrade(vehicle, 1009)
 			boosterAdded = true
-			displayMessageForAll(3243243, "Booster added", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
+			showBooserAdded(bombHolder)
 		end
 	end
 end
@@ -82,9 +82,9 @@ setTimer(tickNitro, 1000, 0)
 function onBombHolderChanged(oldBombHolder)
 	local bombHolder = source
 	boosterAdded = false
-	bindKey(bombHolder, "lctrl", "down", resetBoosterCountdown)
+	bindKey(bombHolder, "lctrl", "down", usingBooster)
 	if ( oldBombHolder ~= nil ) then
-		unbindKey(oldBombHolder, "lctrl", "down", resetBoosterCountdown)
+		unbindKey(oldBombHolder, "lctrl", "down", usingBooster)
 	end
 
 	setBoostCooldown(5)

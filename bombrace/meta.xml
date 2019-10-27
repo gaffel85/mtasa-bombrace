@@ -10,9 +10,12 @@
     <script src="bomb.client.collision.lua" type="client" />
 
 	<script src="bomb.server.nitro.lua" />
-	<script src="bomb.client.nitro.lua" />
+	<script src="bomb.client.nitro.lua" type="client" />
 
 	<script src="bomb.server.invisible.lua" />
     <script src="bomb.client.invisible.lua" type="client" />
+
+	<script src="bomb.server.cloak.lua" />
+	<script src="bomb.client.cloak.lua" type="client" />
 
 </meta>

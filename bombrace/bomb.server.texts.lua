@@ -6,6 +6,16 @@ local WINNER_TEXT_ID = 987775
 local PLAYER_READY_TEXT_ID = 987776
 local LEAVING_LOBBY_TEXT_ID = 987777
 local PREPARING_ROUND_TEXT_ID = 987778
+local CLOADK_ADDED_TEXT_ID = 987779
+local NITRO_ADDED_TEXT_ID = 987780
+
+function showCloakAdded(player)
+	displayMessageForAll(CLOADK_ADDED_TEXT_ID, "Cloak ready", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
+end
+
+function showBooserAdded(player)
+	displayMessageForAll(NITRO_ADDED_TEXT_ID, "Nitro ready", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
+end
 
 function showPresentBombHolder(bombHolder)
 	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
