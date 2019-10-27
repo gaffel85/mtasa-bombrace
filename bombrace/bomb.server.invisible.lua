@@ -69,10 +69,14 @@ end
 --^^^^^^^^^^^^^^^^^^^^ Helpers ^^^^^^^^^^^^^^^^^^^^
 
 function makeInvisible(player, time, ghost)
-	ghost = ghost or true
+	if ( ghost == nil) then
+		ghost = true
+	end
 	if ( player == nil ) then
 		return
 	end
+
+	outputChatBox("1. Ghost: "..inspect(ghost))
 
 	local currentState = playerVisibleState[player]
 	playerVisibleState[player] = { ghost = ghost, time = getEndTime(time) }

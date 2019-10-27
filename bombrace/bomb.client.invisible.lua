@@ -8,6 +8,7 @@ function onClientMakeInvisible (isGhost, hardPlayers)
 			setElementAlpha( vehicle, 150 )
 			setElementAlpha( player, 0 )
 
+			outputChatBox("2. Ghost: "..inspect(isGhost))
 			if (isGhost) then
 				for _, hardPlayer in ipairs(hardPlayers) do
 					setElementCollidableWith( vehicle, getPedOccupiedVehicle ( hardPlayer ) , false)
