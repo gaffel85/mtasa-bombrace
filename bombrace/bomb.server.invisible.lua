@@ -23,6 +23,7 @@ function getGhosts()
 			table.insert(ghosts, player)
 		end
 	end
+	return ghosts
 end
 
 function getInvisibles()
@@ -32,6 +33,7 @@ function getInvisibles()
 			table.insert(invisibles, player)
 		end
 	end
+	return invisibles
 end
 
 function getHardPlayers(currentPlayer)
@@ -88,8 +90,8 @@ function makeVisible(player)
 	local currentState = playerVisibleState[player]
 	if ( currentState ~= nil and currentState.time > 0 ) then
 		triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
-		showPlayerBlips()
 	end
+	showPlayerBlips()
 end
 
 function getEndTime(duration)
