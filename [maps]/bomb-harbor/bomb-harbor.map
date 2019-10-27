@@ -1,0 +1,19 @@
+<map edf:definitions="bombrace,editor_main">
+    <object id="object (elecfence_BAR) (5)" breakable="true" interior="0" collisions="true" alpha="255" model="987" doublesided="false" scale="1" dimension="0" posX="-2684.1001" posY="2415.2" posZ="54.4" rotX="0" rotY="0" rotZ="344"></object>
+    <object id="object (elecfence_BAR) (6)" breakable="true" interior="0" collisions="true" alpha="255" model="987" doublesided="false" scale="1" dimension="0" posX="-2687.2" posY="2415.7" posZ="54.2" rotX="0" rotY="0" rotZ="343.998"></object>
+    <object id="object (elecfence_BAR) (7)" breakable="true" interior="0" collisions="true" alpha="255" model="987" doublesided="false" scale="1" dimension="0" posX="-2695.7" posY="2418.1001" posZ="54.5" rotX="0" rotY="0" rotZ="343.998"></object>
+    <object id="object (elecfence_BAR) (8)" breakable="true" interior="0" collisions="true" alpha="255" model="987" doublesided="false" scale="1" dimension="0" posX="-2702" posY="2420.3" posZ="54.5" rotX="0" rotY="0" rotZ="343.998"></object>
+    <lobbyStart id="lobbyStart (1)" color="#0000FFFF" type="checkpoint" size="20" posX="-2262.0996" posY="2296.9004" posZ="3.9" rotX="0" rotY="0" rotZ="0"></lobbyStart>
+    <playerSpawnPoint id="playerSpawnPoint (1)" posX="-2272.3" posY="2321.3" posZ="4.7" rotX="0" rotY="0" rotZ="270"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (2)" alpha="255" interior="0" posX="-2252.3999" posY="2321" posZ="4.7" rotX="0" rotY="0" rotZ="90"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (3)" alpha="255" interior="0" posX="-2271.8999" posY="2330.2" posZ="4.7" rotX="0" rotY="0" rotZ="270"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (4)" alpha="255" interior="0" posX="-2251.8999" posY="2329.8" posZ="4.7" rotX="0" rotY="0" rotZ="90"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (5)" alpha="255" interior="0" posX="-2271.8999" posY="2336.3999" posZ="4.7" rotX="0" rotY="0" rotZ="270"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (6)" alpha="255" interior="0" posX="-2252.2" posY="2336.1001" posZ="4.7" rotX="0" rotY="0" rotZ="90"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (7)" alpha="255" interior="0" posX="-2272.3999" posY="2324.1001" posZ="4.7" rotX="0" rotY="0" rotZ="270"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (8)" alpha="255" interior="0" posX="-2252.7" posY="2323.8" posZ="4.7" rotX="0" rotY="0" rotZ="90"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (9)" alpha="255" interior="0" posX="-2271.6001" posY="2333.3" posZ="4.7" rotX="0" rotY="0" rotZ="270"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (10)" alpha="255" interior="0" posX="-2252.3999" posY="2332.8" posZ="4.7" rotX="0" rotY="0" rotZ="90"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (11)" alpha="255" interior="0" posX="-2272" posY="2327.3" posZ="4.7" rotX="0" rotY="0" rotZ="270"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (12)" alpha="255" interior="0" posX="-2252.5" posY="2327" posZ="4.7" rotX="0" rotY="0" rotZ="90"></playerSpawnPoint>
+</map>

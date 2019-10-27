@@ -1,9 +1,8 @@
 <def name="bombrace">
 	<element name="playerSpawnPoint" friendlyname="Player Spawnpoint">
 		<data name="position" type="coord3d" default="0,0,0" />
-		<data name="rotation" type="number" default="0" />
-		<data name="skin" type="skinID" default="0" />
-		<ped model="!skin!" position="!position!" rotZ="!rotation!" />
+		<data name="rotation" type="number" default="0,0,0" />
+		<vehicle model="415" position="!position!" rotation="!rotation!" />
 	</element>
 	<element name="lobbyStart" friendlyname="Lobby ready zone">
 		<data name="position" type="coord3d" required="true" default="0,0,0" />

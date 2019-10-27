@@ -75,8 +75,9 @@ addEventHandler ( "onVehicleStartExit", getRootElement(), exitVehicle)
 function spawn(thePlayer)
 	local spawnPoint = spawnPoints[currentSpawn]
 	currentSpawn = currentSpawn % #spawnPoints + 1
-  	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
-  	local vehicle = createVehicle(cars[1], posX, posY, posZ, 0, 0, 0, "BOMBER")
+	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
+	local rotX, rotY, rotZ = rotFromEdl ( spawnPoint )
+  	local vehicle = createVehicle(cars[1], posX, posY, posZ, rotX, rotY, rotZ, "BOMBER")
 	spawnPlayer(thePlayer, 0, 0, 0, 0, 285)
 	setTimer(function()
 		warpPedIntoVehicle(thePlayer, vehicle)
@@ -334,6 +335,13 @@ function coordsFromEdl(element)
 	local posX = getElementData ( element, "posX" )
 	local posY = getElementData ( element, "posY" )
 	local posZ = getElementData ( element, "posZ" )
+	return posX, posY, posZ
+end
+
+function rotFromEdl(element)
+	local posX = getElementData ( element, "rotX" )
+	local posY = getElementData ( element, "rotY" )
+	local posZ = getElementData ( element, "rotZ" )
 	return posX, posY, posZ
 end
 
