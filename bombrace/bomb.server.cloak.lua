@@ -49,6 +49,6 @@ function onBombHolderChanged(oldBombHolder)
 		unbindKey(oldBombHolder, "z", "down", useCloak)
 	end
 
-	setCloakCooldown(5)
+	setCloakCooldown(7)
 end
 addEventHandler("bombHolderChanged", root, onBombHolderChanged)

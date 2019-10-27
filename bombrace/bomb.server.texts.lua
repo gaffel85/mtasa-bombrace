@@ -6,15 +6,14 @@ local WINNER_TEXT_ID = 987775
 local PLAYER_READY_TEXT_ID = 987776
 local LEAVING_LOBBY_TEXT_ID = 987777
 local PREPARING_ROUND_TEXT_ID = 987778
-local CLOADK_ADDED_TEXT_ID = 987779
-local NITRO_ADDED_TEXT_ID = 987780
+local POWER_UP_ADDED_TEXT_ID = 987779
 
 function showCloakAdded(player)
-	displayMessageForAll(CLOADK_ADDED_TEXT_ID, "Cloak ready", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
+	displayMessageForAll(POWER_UP_ADDED_TEXT_ID, "Cloak ready", nil, nil, 2000, 0.5, 0.3, 0, 255, 0 )
 end
 
 function showBooserAdded(player)
-	displayMessageForAll(NITRO_ADDED_TEXT_ID, "Nitro ready", nil, nil, 2000, 0.5, 0.5, 0, 0, 255 )
+	displayMessageForAll(POWER_UP_ADDED_TEXT_ID, "Nitro ready", nil, nil, 2000, 0.5, 0.3, 0, 255, 0 )
 end
 
 function showPresentBombHolder(bombHolder)

@@ -2,9 +2,15 @@ local boosterBar = nil
 local boosterLabel = nil
 
 function tickBoosterCooldown(timeLeft, totalTime)
+	if ( source ~= localPlayer) then
+		guiSetVisible(boosterBar, false)
+	else
+		guiSetVisible(boosterBar, true)
+	end
+
 	if (boosterBar == nil) then
 		boosterBar = guiCreateProgressBar( 0.8, 0.35, 0.1, 0.03, true, nil ) --create the gui-progressbar
-		boosterLabel = guiCreateLabel( 0, 0,1,1,"Booster",true, boosterBar)
+		boosterLabel = guiCreateLabel( 0, 0,1,1,"Nitro (LCtrl)",true, boosterBar)
 		guiLabelSetColor ( boosterLabel, 0, 128, 0 )
 		guiLabelSetHorizontalAlign ( boosterLabel, "center" )
 		guiLabelSetVerticalAlign ( boosterLabel, "center" )
