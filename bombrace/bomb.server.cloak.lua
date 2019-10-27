@@ -23,8 +23,8 @@ function cloakCooldownLeft()
 	return cloakCooldown - currentTime.timestamp
 end
 
-function tickCooldown()
-	if (gameState ~= GAME_STATE_ACTIVE_GAME) then
+function tickCloakCooldown()
+	if (getGameState() ~= GAME_STATE_ACTIVE_GAME or cloakCooldown == nil) then
 		return
 	end
 
@@ -39,7 +39,7 @@ function tickCooldown()
 		showCloakAdded(bombHolder)
 	end
 end
-setTimer(tickCooldown, 1000, 0)
+setTimer(tickCloakCooldown, 1000, 0)
 
 function onBombHolderChanged(oldBombHolder)
 	local bombHolder = source
@@ -51,4 +51,4 @@ function onBombHolderChanged(oldBombHolder)
 
 	setCloakCooldown(5)
 end
-addEventHandler(EVENT_BOMB_HOLDER_CHANGED, getResourceRootElement(), onBombHolderChanged)
+addEventHandler("bombHolderChanged", root, onBombHolderChanged)

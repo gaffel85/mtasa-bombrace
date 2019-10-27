@@ -20,7 +20,7 @@ end
 function showPresentBombHolder(bombHolder)
 	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
 
-	displayMessageForPlayer(PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID, "You have the bomb. GET IT OFF!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
+	displayMessageForPlayer(bombHolder, PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID, "You have the bomb. GET IT OFF!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
 end
 
 function showLateJoinMessage(player)
@@ -30,7 +30,9 @@ end
 
 function showPrepareRoundTimer(timeLeft)
 	hideBombTimer()
-	displayMessageForAll(PREPARING_ROUND_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
+	if ( timeLeft ~= nil ) then
+		displayMessageForAll(PREPARING_ROUND_TEXT_ID, "Starting in "..timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 0, 255, 0 )
+	end
 end
 
 function showBombTimer(timeLeft)
@@ -43,7 +45,7 @@ function hideBombTimer()
 end
 
 function showWinner(player)
-	local message = getPlayerName ( lastAlive ).." won this round"
+	local message = getPlayerName ( player ).." won this round"
 	displayMessageForAll(WINNER_TEXT_ID, message, nil, nil, 5000, 0.5, 0.5, 0, 0, 255 )
 end
 

@@ -25,6 +25,15 @@ function getGhosts()
 	end
 end
 
+function getInvisibles()
+	local invisibles = {}
+	for player,state in pairs(playerVisibleState) do
+		if (state.time > 0) then
+			table.insert(invisibles, player)
+		end
+	end
+end
+
 function getHardPlayers(currentPlayer)
 	local hardPlayers = {}
 	local ghosts = getGhosts()
@@ -40,6 +49,21 @@ function getHardPlayers(currentPlayer)
 	return hardPlayers
 end
 
+function getVisiblePlayers(currentPlayer)
+	local visivlePlayers = {}
+	local invisibles = getInvisibles()
+
+	local players = getElementsByType ( "player" )
+	for k,otherPlayer in ipairs(players) do
+		local notInvisible = has_value(invisibles, otherPlayer) == false
+		if (otherPlayer ~= currentPlayer and notInvisible) then
+			table.insert(visivlePlayers, otherPlayer)
+		end
+	end
+
+	return visivlePlayers
+end
+
 --^^^^^^^^^^^^^^^^^^^^ Helpers ^^^^^^^^^^^^^^^^^^^^
 
 function makeInvisible(player, time, ghost)
@@ -50,7 +74,7 @@ function makeInvisible(player, time, ghost)
 
 	local currentState = playerVisibleState[player]
 	playerVisibleState[player] = { ghost = ghost, time = getEndTime(time) }
-	if ( currentState == nil or currentState.time < 0 ) then
+	if ( currentState == nil or currentState.time < 0  or currentState.ghost ~= ghost) then
 		triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player))
 		showPlayerBlips()
 	end
@@ -99,7 +123,7 @@ setTimer(periodicVisibleCheck, 1000, 0)
 function showPlayerBlips()
 	destroyElementsByType ("blip")
 	local bombHolder = getBombHolder()
-	for _,player in ipairs(getHardPlayers( bombHolder )) do	
+	for _,player in ipairs(getVisiblePlayers( bombHolder )) do	
 		local blip = createBlipAttachedTo ( player, 0 )
 		setElementVisibleTo ( blip, root, false )
 		if ( player ~= bombHolder ) then

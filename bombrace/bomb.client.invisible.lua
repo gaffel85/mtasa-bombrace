@@ -5,7 +5,7 @@ function onClientMakeInvisible (isGhost, hardPlayers)
 		
 		local vehicle = getPedOccupiedVehicle( player )
 		if ( getLocalPlayer() == player ) then
-			setElementAlpha( vehicle, 100 )
+			setElementAlpha( vehicle, 150 )
 			setElementAlpha( player, 0 )
 
 			if (isGhost) then

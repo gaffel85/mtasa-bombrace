@@ -37,6 +37,10 @@ function durationLeft()
 end
 
 function tickCooldown()
+	if ( boostCooldown == nil ) then
+		return
+	end
+
 	local bombHolder = getBombHolder()
 	local timeLeft = boostCooldownLeft()
 	if (timeLeft >= 0 and boosterAdded == false and bombHolder ~= nil) then
@@ -54,8 +58,8 @@ function tickCooldown()
 end
 
 function tickDuration()
-	if (nitroEndsTime ~= nil) then
-
+	if (nitroEndsTime == nil) then
+		return
 	end
 
 	local bombHolder = getBombHolder()
@@ -70,7 +74,7 @@ function tickDuration()
 end
 
 function tickNitro()
-	if (gameState ~= GAME_STATE_ACTIVE_GAME) then
+	if (getGameState() ~= GAME_STATE_ACTIVE_GAME) then
 		return
 	end
 
@@ -80,6 +84,7 @@ end
 setTimer(tickNitro, 1000, 0)
 
 function onBombHolderChanged(oldBombHolder)
+	outputChatBox("Nitro bombholder")
 	local bombHolder = source
 	boosterAdded = false
 	bindKey(bombHolder, "lctrl", "down", usingBooster)
@@ -89,4 +94,4 @@ function onBombHolderChanged(oldBombHolder)
 
 	setBoostCooldown(5)
 end
-addEventHandler(EVENT_BOMB_HOLDER_CHANGED, getResourceRootElement(), onBombHolderChanged)
+addEventHandler("bombHolderChanged", root, onBombHolderChanged)

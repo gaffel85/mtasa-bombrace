@@ -2,12 +2,11 @@ local spawnPoints
 local currentSpawn = 1
 local mapLobbyMarker
 
-local GAME_STATE_LOBBY = 1
-local GAME_STATE_PREPARING_ROUND = 2
-local GAME_STATE_ACTIVE_GAME = 3
+GAME_STATE_LOBBY = 1
+GAME_STATE_PREPARING_ROUND = 2
+GAME_STATE_ACTIVE_GAME = 3
 local gameState = GAME_STATE_LOBBY
 
-local EVENT_BOMB_HOLDER_CHANGED = "bombHolderChanged"
 
 local bombHolder
 local previousBombHolder
@@ -21,7 +20,7 @@ local SCORE_KEY = "Score"
 
 local cars = {415, 596}
 
-addEvent(EVENT_BOMB_HOLDER_CHANGED)
+addEvent("bombHolderChanged")
 
 scoreboardRes = getResourceFromName( "scoreboard" )
 
@@ -37,6 +36,10 @@ end
 
 function getBombHolder()
 	return bombHolder
+end
+
+function getGameState()
+	return gameState
 end
 
 function setBombHolder ( player )
@@ -58,7 +61,7 @@ function setBombHolder ( player )
 	end
 	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
 	fixVehicle (getPedOccupiedVehicle ( player ) )
-	triggerEvent(EVENT_BOMB_HOLDER_CHANGED, bombHolder, oldBombHolder)
+	triggerEvent("bombHolderChanged", bombHolder, oldBombHolder)
 end
 
 -- Stop player from exiting vehicle
@@ -117,7 +120,7 @@ function tickBombTimer()
 		if ( timeLeft < 0 ) then
 			startActiveRound()
 		else
-			showPrepareRoundTimer()
+			showPrepareRoundTimer(timeLeft)
 		end
 	end
 
