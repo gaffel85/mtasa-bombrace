@@ -61,6 +61,8 @@ function setBombHolder ( player )
 	end
 	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
 	fixVehicle (getPedOccupiedVehicle ( player ) )
+
+	setBombTime( bombTimeLeft() + SWITCH_EXTRA_TIME )
 	triggerEvent("bombHolderChanged", bombHolder, oldBombHolder)
 end
 
