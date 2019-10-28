@@ -18,11 +18,20 @@ local participants = {}
 
 local SCORE_KEY = "Score"
 
-local cars = {415, 596}
+local currentVehicle = 1
+local vehicles = {415, 596}
 
 addEvent("bombHolderChanged")
 
 scoreboardRes = getResourceFromName( "scoreboard" )
+
+function nextVehicle()
+	currentVehicle = currentVehicle % #vehicles + 1
+end
+
+function getCurrentVehicle()
+	return vehicles[currentVehicle]
+end
 
 function selectRandomBombHolder()
 	local players = getAlivePlayers ()
@@ -77,7 +86,7 @@ function spawn(thePlayer)
 	currentSpawn = currentSpawn % #spawnPoints + 1
 	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
 	local rotX, rotY, rotZ = rotFromEdl ( spawnPoint )
-  	local vehicle = createVehicle(cars[1], posX, posY, posZ, rotX, rotY, rotZ, "BOMBER")
+  	local vehicle = createVehicle(getCurrentVehicle(), posX, posY, posZ, rotX, rotY, rotZ, "BOMBER")
 	spawnPlayer(thePlayer, 0, 0, 0, 0, 285)
 	setTimer(function()
 		warpPedIntoVehicle(thePlayer, vehicle)
@@ -156,9 +165,10 @@ end
 function checkIfAnyAliveAndSelectNewBombHolder(lastAlive)
 	local alivePlayers = getAlivePlayers ()
 	if ( #alivePlayers > 1 ) then
+		nextVehicle()
 		selectRandomBombHolder()
 	else
-		showWinner(lastAlive)
+		showWinner(alivePlayers[1])
 		setTimer(activeRoundFinished, 2000, 1)
 	end
 end
