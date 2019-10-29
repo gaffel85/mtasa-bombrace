@@ -19,7 +19,7 @@ local participants = {}
 local SCORE_KEY = "Score"
 
 local currentVehicle = 1
-local vehicles = {415, 596}
+local vehicles = {551, 415, 531, 475, 437, 557}
 
 addEvent("bombHolderChanged")
 
@@ -165,7 +165,6 @@ end
 function checkIfAnyAliveAndSelectNewBombHolder(lastAlive)
 	local alivePlayers = getAlivePlayers ()
 	if ( #alivePlayers > 1 ) then
-		nextVehicle()
 		selectRandomBombHolder()
 	else
 		showWinner(alivePlayers[1])
@@ -280,7 +279,10 @@ function startActiveRound()
 end
 
 function activeRoundFinished()
-	enterLobby()
+	nextVehicle()
+	resetRoundVars()
+	leaveLobby()
+	destroyElementsByType ("vehicle")
 	respawnAllPlayers()
 end
 

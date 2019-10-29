@@ -84,7 +84,6 @@ end
 setTimer(tickNitro, 1000, 0)
 
 function onBombHolderChanged(oldBombHolder)
-	outputChatBox("Nitro bombholder")
 	local bombHolder = source
 	boosterAdded = false
 	bindKey(bombHolder, "lctrl", "down", usingBooster)
