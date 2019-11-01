@@ -73,6 +73,7 @@ function setBombHolder ( player )
 
 	setBombTime( bombTimeLeft() + SWITCH_EXTRA_TIME )
 	triggerEvent("bombHolderChanged", bombHolder, oldBombHolder)
+	triggerClientEvent("timesAlmostUp", bombHolder)
 end
 
 -- Stop player from exiting vehicle

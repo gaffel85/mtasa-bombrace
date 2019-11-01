@@ -4,6 +4,8 @@
 	<include resource="votemanager"/>
 	<include resource="easytext" />
 
+	<file src="sounds/stress.mp3" download="true" />
+
 	<script src="bomb.server.properties.lua" />
 	<script src="bomb.server.texts.lua" />
 	<script src="bomb.server.main.lua" />

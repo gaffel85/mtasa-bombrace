@@ -12,7 +12,10 @@ addEvent("onBombHolderChanged", true)
 addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
 
 function timesAlmostUp2()
-	playSound("sounds/stress.mp3")
+	if ( localPlayer == bombHolder) then
+		setRadioChannel ( 0 )  
+		playSound("sounds/stress.mp3")    
+	end
 end
 addEvent("timesAlmostUp", true)
 addEventHandler("timesAlmostUp", getRootElement(), timesAlmostUp2)
