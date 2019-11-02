@@ -1,17 +1,8 @@
-local bombHolder = nil
 local damageBar = nil
 local damageLabel = nil
 
--- Since we listen for events on the root element we can use the bombHolder as the source. Events
--- triggered on any element will be catched if we listening to the root element.
-function bombHolderChanged ( oldBombHolder )
-	bombHolder = source
-end
-addEvent("onBombHolderChanged", true)
-addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
-
 function onCollision(collider)
-	if ( collider ~= nil and localPlayer == bombHolder) then
+	if ( collider ~= nil and localPlayer == getBombHolder() ) then
 		outputDebugString("Collider type: "..inspect(getElementType ( collider )))
 		outputDebugString("Local player vehicle: "..inspect(getPedOccupiedVehicle(localPlayer)))
 		if ( source == getPedOccupiedVehicle(localPlayer) and getElementType ( collider ) == "vehicle" ) then
@@ -49,7 +40,7 @@ addEventHandler ( "onClientVehicleDamage", root, function ( )
 	if ( health < 250 ) then
 		
 		local driver = getVehicleOccupant ( vehicle )
-		if ( driver == bombHolder ) then
+		if ( driver == getBombHolder() ) then
 			setVehicleDamageProof ( vehicle , true )
 			flipIfNeeded ( vehicle )
 			fixVehicle ( vehicle )

@@ -284,6 +284,7 @@ function activeRoundFinished()
 	resetRoundVars()
 	leaveLobby()
 	destroyElementsByType ("vehicle")
+	triggerClientEvent ( "newRound", getRootElement() )
 	respawnAllPlayers()
 end
 
@@ -340,9 +341,14 @@ end
 addEventHandler( "onPlayerMarkerHit", getRootElement(), markerHit )
 
 function playerDied( ammo, attacker, weapon, bodypart )
-	
+	triggerClientEvent ( "playerDied", source, getAlivePlayers() )
+	setTimer(startSpectating, 3000, 1)
 end
 addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
+
+function startSpectating(player) 
+	triggerClientEvent ( "startSpectating", player )
+end
 
 function coordsFromEdl(element)
 	local posX = getElementData ( element, "posX" )
