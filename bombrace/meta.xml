@@ -20,4 +20,6 @@
 	<script src="bomb.server.cloak.lua" />
 	<script src="bomb.client.cloak.lua" type="client" />
 
+	<script src="bomb.client.sounds.lua" type="client" />
+
 </meta>

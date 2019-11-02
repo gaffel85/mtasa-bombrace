@@ -6,19 +6,9 @@ local damageLabel = nil
 -- triggered on any element will be catched if we listening to the root element.
 function bombHolderChanged ( oldBombHolder )
 	bombHolder = source
-	outputDebugString("New bombHolder: "..inspect(bombHolder))
 end
 addEvent("onBombHolderChanged", true)
 addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
-
-function timesAlmostUp2()
-	if ( localPlayer == bombHolder) then
-		setRadioChannel ( 0 )  
-		playSound("sounds/stress.mp3")    
-	end
-end
-addEvent("timesAlmostUp", true)
-addEventHandler("timesAlmostUp", getRootElement(), timesAlmostUp2)
 
 function onCollision(collider)
 	if ( collider ~= nil and localPlayer == bombHolder) then
