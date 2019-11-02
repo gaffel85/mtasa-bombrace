@@ -25,6 +25,12 @@ function flipIfNeeded(vehicle)
 end
 
 addEventHandler ( "onClientVehicleDamage", root, function ( )
+
+	if ( getVehicleOccupant ( source ) ~= localPlayer ) then
+		outputDebugString("Not my vehicle"..inspect(source))
+		return
+	end	
+
 	if (damageBar == nil) then
 		damageBar = guiCreateProgressBar( 0.8, 0.3, 0.1, 0.03, true, nil ) --create the gui-progressbar
 		damageLabel = guiCreateLabel( 0, 0,1,1,"Damage",true, damageBar)
