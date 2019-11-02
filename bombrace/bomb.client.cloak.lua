@@ -2,10 +2,12 @@ local cloakBar = nil
 local cloakLabel = nil
 
 function tickCloakCooldown(timeLeft, totalTime)
-	if ( source ~= localPlayer) then
-		guiSetVisible(cloakBar, false)
-	else
-		guiSetVisible(cloakBar, true)
+	if ( cloakBar ~= nil ) then
+		if ( source ~= localPlayer) then
+			guiSetVisible(cloakBar, false)
+		else
+			guiSetVisible(cloakBar, true)
+		end
 	end
 
 	if (cloakBar == nil) then

@@ -35,7 +35,6 @@ end
 
 function selectRandomBombHolder()
 	local players = getAlivePlayers ()
-	outputChatBox("Alive players: "..#players)
 	if ( #players > 1 ) then
 		local newBombHolder = players[math.random ( #players ) ]
 		resetBomb()
@@ -73,7 +72,6 @@ function setBombHolder ( player )
 
 	setBombTime( bombTimeLeft() + SWITCH_EXTRA_TIME )
 	triggerEvent("bombHolderChanged", bombHolder, oldBombHolder)
-	triggerClientEvent("timesAlmostUp", bombHolder)
 end
 
 -- Stop player from exiting vehicle
@@ -140,7 +138,7 @@ function tickBombTimer()
 	local players = getElementsByType ( "player" )
 	if(bombHolder ~= nil and #players > 0) then
 		timeLeft = bombTimeLeft()
-		if (timeLeft < 11 and timeLeft > 9) then
+		if (timeLeft < 12 and timeLeft > 10) then
 			triggerClientEvent("timesAlmostUp", bombHolder)
 		end
 
@@ -341,12 +339,14 @@ end
 addEventHandler( "onPlayerMarkerHit", getRootElement(), markerHit )
 
 function playerDied( ammo, attacker, weapon, bodypart )
+	outputChatBox("Sending playerDied event")
 	triggerClientEvent ( "playerDied", source, getAlivePlayers() )
-	setTimer(startSpectating, 3000, 1)
+	setTimer(startSpectating, 3000, 1, source)
 end
 addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
 
 function startSpectating(player) 
+	outputChatBox("Sending spectating event")
 	triggerClientEvent ( "startSpectating", player )
 end
 

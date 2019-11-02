@@ -1,13 +1,9 @@
 local alivePlayers = {}
 local currentSpectateeName = nil
 
-g_Players = getElementsByType("player")        -- get a list of all players in the server
-for i,aPlayer in ipairs(g_Players) do          -- find out what index the local player has in the list
-    if aPlayer == localPlayer then
-        g_CurrentSpectated = i
-        break
-    end
-end
+addEvent("playerDied", true)
+addEvent("newRound", true)
+addEvent("startSpectating", true)
 
 function getCurrentIndex()
     if ( currentSpectatee == nil ) then
@@ -48,6 +44,7 @@ function spectateNext()
 end
 
 function onPlayerDied(allAlivePlayers)
+    outputChatBox("Received playerDied event")
     alivePlayers = allAlivePlayers
 end
 addEventHandler("playerDied", getRootElement(), onPlayerDied)
@@ -60,6 +57,7 @@ end
 addEventHandler("playerDied", getRootElement(), onNewRound)
 
 function onStartSpectating()
+    outputChatBox("Start spectating"..inspect(source))
     if ( source == localPlayer and #alivePlayers > 0) then
         bindKey("arrow_l", "down", spectatePrevious)
         bindKey("arrow_r", "down", spectateNext)
@@ -67,7 +65,3 @@ function onStartSpectating()
     end
 end
 addEventHandler("startSpectating", getRootElement(), onStartSpectating)
-
-addEvent("playerDied", true)
-addEvent("newRound", true)
-addEvent("startSpectating", true)

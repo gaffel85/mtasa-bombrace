@@ -2,10 +2,12 @@ local boosterBar = nil
 local boosterLabel = nil
 
 function tickBoosterCooldown(timeLeft, totalTime)
-	if ( source ~= localPlayer) then
-		guiSetVisible(boosterBar, false)
-	else
-		guiSetVisible(boosterBar, true)
+	if ( boosterBar ~= nil ) then
+		if ( source ~= localPlayer) then
+			guiSetVisible(boosterBar, false)
+		else
+			guiSetVisible(boosterBar, true)
+		end
 	end
 
 	if (boosterBar == nil) then
