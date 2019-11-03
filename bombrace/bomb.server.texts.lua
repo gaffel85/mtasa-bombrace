@@ -104,6 +104,7 @@ function clearMessageForPlayer ( player, ID )
 end
 
 function onClientText ( fn )
+	outputChatBox("Text function "..fn)
 	local player = client
 	_G[fn](player)
 end
