@@ -7,6 +7,7 @@ local PLAYER_READY_TEXT_ID = 987776
 local LEAVING_LOBBY_TEXT_ID = 987777
 local PREPARING_ROUND_TEXT_ID = 987778
 local POWER_UP_ADDED_TEXT_ID = 987779
+local REPAIRING_CAR_TEXT_ID = 987780
 
 function showCloakAdded(player)
 	displayMessageForAll(POWER_UP_ADDED_TEXT_ID, "Cloak ready", nil, nil, 2000, 0.5, 0.3, 0, 255, 0 )
@@ -36,7 +37,7 @@ end
 
 function showBombTimer(timeLeft)
 	clearMessageForAll(PREPARING_ROUND_TEXT_ID)
-	displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.1, 255, 0, 0 )
+	displayMessageForAll(BOMB_TIMER_TEXT_ID, timeLeft.."s", nil, nil, 2000, 0.5, 0.9, 255, 0, 0, 255, 4 )
 end
 
 function hideBombTimer()
@@ -55,6 +56,10 @@ end
 
 function showLeavingLobbyMessage(bombHolder)
 	displayMessageForAll(LEAVING_LOBBY_TEXT_ID, "The bomb holder will be selected soon", nil, nil, 5000, 0.5, 0.5, 88, 255, 120)
+end
+
+function showRepairingCar(player)
+	displayMessageForPlayer(player, REPAIRING_CAR_TEXT_ID, "Car broken. Wait "..REPAIR_TIME.."s.", nil, nil, REPAIR_TIME*1000, 0.5, 0.3, 255, 128, 70 )
 end
 
 function displayMessageForAll(textId, text, specialPlayer, specialText, displayTime, posX, posY, r, g, b, alpha, scale)
@@ -97,3 +102,10 @@ function clearMessageForPlayer ( player, ID )
 	assert ( player and ID )
 	call ( getResourceFromName ( "easytext" ), "clearMessageForPlayer", player, ID )
 end
+
+function onClientText ( fn )
+	local player = client
+	_G[fn](player)
+end
+addEvent( "clientText", true )
+addEventHandler( "clientText", getRootElement(), onClientText )

@@ -15,6 +15,7 @@ local bombMarker
 local bombEndTime
 local lobbyMarker
 local participants = {}
+local blowingPlayer = nil
 
 local SCORE_KEY = "Score"
 
@@ -51,6 +52,16 @@ function getGameState()
 end
 
 function setBombHolder ( player )
+	if(bombMarker == nil ) then
+		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
+	end
+	attachElements ( bombMarker, player, 0, 0, 4 )
+
+	if ( player == bombHolder ) then
+		return
+	end
+
+	blowingPlayer = nil
 
 	local oldBombHolder = bombHolder
 	if (oldBombHolder ~= nil) then
@@ -63,11 +74,6 @@ function setBombHolder ( player )
 	triggerClientEvent("onBombHolderChanged", player, oldBombHolder)
 
 	showPresentBombHolder(bombHolder)
-
-	if(bombMarker == nil ) then
-		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
-	end
-	attachElements ( bombMarker, bombHolder, 0, 0, 4 )
 	fixVehicle (getPedOccupiedVehicle ( player ) )
 
 	setBombTime( bombTimeLeft() + SWITCH_EXTRA_TIME )
@@ -85,7 +91,11 @@ function spawn(thePlayer)
 	currentSpawn = currentSpawn % #spawnPoints + 1
 	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
 	local rotX, rotY, rotZ = rotFromEdl ( spawnPoint )
-  	local vehicle = createVehicle(getCurrentVehicle(), posX, posY, posZ, rotX, rotY, rotZ, "BOMBER")
+  	spawnAt(player, posX, posY, posZ, rotX, rotY, rotZ)
+end
+
+function spawnAt(player, posX, posY, posZ, rotX, rotY, rotZ) 
+	local vehicle = createVehicle(getCurrentVehicle(), posX, posY, posZ, rotX, rotY, rotZ, "BOMBER")
 	spawnPlayer(thePlayer, 0, 0, 0, 0, 285)
 	setTimer(function()
 		warpPedIntoVehicle(thePlayer, vehicle)
@@ -154,6 +164,7 @@ setTimer(tickBombTimer, 1000, 0)
 function blowBombHolder()
 	local lastBomdBolder = bombHolder
 	local vehicle = getPedOccupiedVehicle ( bombHolder )
+	blowingPlayer = bombHolder
 	blowVehicle(vehicle)
 	bombHolder = nil
 	hideBombTimer()	
@@ -339,9 +350,31 @@ end
 addEventHandler( "onPlayerMarkerHit", getRootElement(), markerHit )
 
 function playerDied( ammo, attacker, weapon, bodypart )
-	outputChatBox("Sending playerDied event")
-	triggerClientEvent ( "playerDied", source, getAlivePlayers() )
-	setTimer(startSpectating, 3000, 1, source)
+	if ( blowingPlayer == source ) then
+		blowingPlayer = nil
+		outputChatBox("Sending playerDied event")
+		triggerClientEvent ( "playerDied", source, getAlivePlayers() )
+		setTimer(startSpectating, 3000, 1, source)
+	else
+		local vehicle = getPedOccupiedVehicle ( source )
+		if ( vehicle ~= nil ) then
+			local posX, posY, posZ = getElementPosition(vehicle)
+			destroyElement ( vehicle )
+			spawnAt( source, posX, posY, posZ, 0, 0, 0)
+		else
+			spawn(source)
+		end
+
+		if ( source == bombHolder ) then
+			setBombHolder ( source ) 
+		else 
+			showRepairingCar ( source )
+			toggleAllControls ( false, true, false )
+			setTimer(function() 
+				toggleAllControls ( true, true, true )
+			end, 5000, 1)
+		end
+	end
 end
 addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
 
@@ -430,10 +463,3 @@ end
 addEvent( "onCollisionWithPlayer", true )
 addEventHandler( "onCollisionWithPlayer", getRootElement(), collisisionWithPlayer )
 
-function veryLowHealth ( )
-	if ( client ~= bombHolder) then
-		setBombHolder( client )
-	end
-end
-addEvent( "lowOnHealth", true )
-addEventHandler( "lowOnHealth", getRootElement(), veryLowHealth )

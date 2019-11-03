@@ -56,7 +56,7 @@ addEventHandler ( "onClientVehicleDamage", root, function ( )
 		else
 			toggleAllControls ( false, true, false )
 			setVehicleDamageProof ( vehicle , true )
-			--displayMessageForPlayer(929921111, "Car broken. Wait 5 sec.", 5000, 0.5, 0.5, 255, 0, 0 )
+			triggerServerEvent("clientText", resourceRoot, "showRepairingCar")
 
 			fixVehicle (vehicle)
 			flipIfNeeded ( vehicle )
