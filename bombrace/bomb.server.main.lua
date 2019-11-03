@@ -91,16 +91,16 @@ function spawn(thePlayer)
 	currentSpawn = currentSpawn % #spawnPoints + 1
 	local posX, posY, posZ = coordsFromEdl ( spawnPoint )
 	local rotX, rotY, rotZ = rotFromEdl ( spawnPoint )
-  	spawnAt(player, posX, posY, posZ, rotX, rotY, rotZ)
+  	spawnAt(thePlayer, posX, posY, posZ, rotX, rotY, rotZ)
 end
 
 function spawnAt(player, posX, posY, posZ, rotX, rotY, rotZ) 
 	local vehicle = createVehicle(getCurrentVehicle(), posX, posY, posZ, rotX, rotY, rotZ, "BOMBER")
-	spawnPlayer(thePlayer, 0, 0, 0, 0, 285)
+	spawnPlayer(player, 0, 0, 0, 0, 285)
 	setTimer(function()
-		warpPedIntoVehicle(thePlayer, vehicle)
-		fadeCamera(thePlayer, true)
-		setCameraTarget(thePlayer, thePlayer)
+		warpPedIntoVehicle(player, vehicle)
+		fadeCamera(player, true)
+		setCameraTarget(player, player)
 	end, 50, 1)
 end
 
@@ -351,22 +351,16 @@ function playerDied( ammo, attacker, weapon, bodypart )
 		triggerClientEvent ( "playerDied", source, getAlivePlayers() )
 		setTimer(startSpectating, 3000, 1, source)
 	else
-		local vehicle = getPedOccupiedVehicle ( source )
-		if ( vehicle ~= nil ) then
-			local posX, posY, posZ = getElementPosition(vehicle)
-			destroyElement ( vehicle )
-			spawnAt( source, posX, posY, posZ, 0, 0, 0)
-		else
-			spawn(source)
-		end
+		local posX, posY, posZ = getElementPosition(source)
+		spawnAt( source, posX, posY, posZ, 0, 0, 0)
 
 		if ( source == bombHolder ) then
 			setBombHolder ( source ) 
 		else 
 			showRepairingCar ( source )
-			toggleAllControls ( false, true, false )
+			toggleAllControls ( source, false, true, false )
 			setTimer(function() 
-				toggleAllControls ( true, true, true )
+				toggleAllControls ( source, true, true, true )
 			end, 5000, 1)
 		end
 	end
