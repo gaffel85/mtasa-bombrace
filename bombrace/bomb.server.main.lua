@@ -126,11 +126,6 @@ function bombTimeLeft()
 	return bombEndTime - currentTime.timestamp
 end
 
-function bombTimeLeft() 
-	local currentTime = getRealTime()
-	return bombEndTime - currentTime.timestamp
-end
-
 function tickBombTimer()
 	if (gameState == GAME_STATE_LOBBY) then
 		return
