@@ -7,12 +7,10 @@ GAME_STATE_PREPARING_ROUND = 2
 GAME_STATE_ACTIVE_GAME = 3
 local gameState = GAME_STATE_LOBBY
 
-
 local bombHolder
 local previousBombHolder
 local previousBombHolderResetter
 local bombMarker
-local bombEndTime
 local lobbyMarker
 local participants = {}
 local blowingPlayer = nil
@@ -32,6 +30,10 @@ end
 
 function getCurrentVehicle()
 	return vehicles[currentVehicle]
+end
+
+function getGameState()
+	return gameState
 end
 
 function selectRandomBombHolder()
@@ -76,7 +78,7 @@ function setBombHolder ( player )
 	showPresentBombHolder(bombHolder)
 	fixVehicle (getPedOccupiedVehicle ( player ) )
 
-	setBombTime( bombTimeLeft() + SWITCH_EXTRA_TIME )
+	addBombTime( SWITCH_EXTRA_TIME )
 	triggerEvent("bombHolderChanged", bombHolder, oldBombHolder)
 end
 
@@ -121,41 +123,6 @@ function repairAllCars()
 	end
 end
 
-function bombTimeLeft() 
-	local currentTime = getRealTime()
-	return bombEndTime - currentTime.timestamp
-end
-
-function tickBombTimer()
-	if (gameState == GAME_STATE_LOBBY) then
-		return
-	end
-
-	if (gameState == GAME_STATE_PREPARE_ROUND) then
-		timeLeft = bombTimeLeft()
-		if ( timeLeft < 0 ) then
-			startActiveRound()
-		else
-			showPrepareRoundTimer(timeLeft)
-		end
-	end
-
-	local players = getElementsByType ( "player" )
-	if(bombHolder ~= nil and #players > 0) then
-		timeLeft = bombTimeLeft()
-		if (timeLeft < 12 and timeLeft > 10) then
-			triggerClientEvent("timesAlmostUp", bombHolder)
-		end
-
-		if ( timeLeft < 0 ) then
-			blowBombHolder()
-		else
-			showBombTimer(timeLeft)
-		end
-	end
-end
-setTimer(tickBombTimer, 1000, 0)
-
 function blowBombHolder()
 	local lastBomdBolder = bombHolder
 	local vehicle = getPedOccupiedVehicle ( bombHolder )
@@ -166,6 +133,7 @@ function blowBombHolder()
 	setTimer(givePointsToAllAlive, 1000, 1)
 	setTimer(checkIfAnyAliveAndSelectNewBombHolder, 2000, 1, lastBomdBolder)
 end
+addEventHandler("bombTimesUp", root, blowBombHolder)
 
 function checkIfAnyAliveAndSelectNewBombHolder(lastAlive)
 	local alivePlayers = getAlivePlayers ()
@@ -191,15 +159,6 @@ function givePointsToPlayer(player, points)
 	end
 	score = score + points
 	setElementData( player, SCORE_KEY , score)
-end
-
-function resetBomb()
-	setBombTime(BOMB_START_SECONDS)
-end
-
-function setBombTime(duration)
-	local time = getRealTime()
-	bombEndTime = time.timestamp + duration
 end
 
 function arrayExists (tab, val)
@@ -411,15 +370,6 @@ addEventHandler("onResourceStart",getResourceRootElement(getThisResource()),
 function()
 	call(scoreboardRes,"addScoreboardColumn",SCORE_KEY)
 end )
-
-addCommandHandler ( "changetime",
-    function ( thePlayer, command, time )
-        local timeNumber = tonumber ( time )
-		if ( timeNumber > 0 ) then
-			setBombTime(timeNumber)
-		end
-    end
-)
 
 addCommandHandler ( "changeveh",
     function ( thePlayer, command, newModel )
