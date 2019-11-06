@@ -43,7 +43,6 @@ function tickBombTimer()
 
 		if ( timeLeft < 0 ) then
 			triggerEvent("bombTimesUp", getBombHolder())
-			blowBombHolder()
 		else
 			showBombTimer(timeLeft)
 		end

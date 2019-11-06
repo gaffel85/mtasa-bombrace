@@ -44,7 +44,6 @@ function spectateNext()
 end
 
 function onPlayerDied(allAlivePlayers)
-    outputChatBox("Received playerDied event")
     alivePlayers = allAlivePlayers
 end
 addEventHandler("playerDied", getRootElement(), onPlayerDied)
@@ -54,10 +53,9 @@ function onNewRound()
     unbindKey("arrow_l", "down", spectatePrevious)
     unbindKey("arrow_r", "down", spectateNext)
 end
-addEventHandler("playerDied", getRootElement(), onNewRound)
+addEventHandler("newRound", getRootElement(), onNewRound)
 
 function onStartSpectating()
-    outputChatBox("Start spectating"..inspect(source))
     if ( source == localPlayer and #alivePlayers > 0) then
         bindKey("arrow_l", "down", spectatePrevious)
         bindKey("arrow_r", "down", spectateNext)

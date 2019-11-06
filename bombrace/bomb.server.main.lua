@@ -196,7 +196,6 @@ function showLobbyMarker()
 end
 
 function startGameMap( startedMap )
-	outputDebugString("startGameMap")
 	local mapRoot = getResourceRootElement( startedMap )
 	spawnPoints = getElementsByType ( "playerSpawnPoint" , mapRoot )
 	mapLobbyMarker = getElementsByType ( "lobbyStart" , mapRoot )[1]
@@ -221,7 +220,7 @@ end
 
 function leaveLobby()
 	local time = getRealTime()
-	bombEndTime = time.timestamp + PREPARE_TIME
+	setBombTime(PREPARE_TIME)
 	gameState = GAME_STATE_PREPARE_ROUND
 	removeLobbyMarker()
 	repairAllCars()
@@ -306,7 +305,6 @@ addEventHandler( "onPlayerMarkerHit", getRootElement(), markerHit )
 function playerDied( ammo, attacker, weapon, bodypart )
 	if ( blowingPlayer == source ) then
 		blowingPlayer = nil
-		outputChatBox("Sending playerDied event")
 		triggerClientEvent ( "playerDied", source, getAlivePlayers() )
 		setTimer(startSpectating, 3000, 1, source)
 	else
@@ -327,7 +325,6 @@ end
 addEventHandler( "onPlayerWasted", getRootElement( ), playerDied)
 
 function startSpectating(player) 
-	outputChatBox("Sending spectating event")
 	triggerClientEvent ( "startSpectating", player )
 end
 

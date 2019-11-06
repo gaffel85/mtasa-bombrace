@@ -8,8 +8,8 @@
 
 	<script src="bomb.server.properties.lua" />
 	<script src="bomb.server.texts.lua" />
-	<script src="bomb.server.main.lua" />
 	<script src="bomb.server.timer.lua" />
+	<script src="bomb.server.main.lua" />
 
 	<script src="bomb.client.bombholder.lua" type="client" />
     <script src="bomb.client.collision.lua" type="client" />
