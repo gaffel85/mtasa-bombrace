@@ -44,7 +44,9 @@ function tickBombTimer()
 		if ( timeLeft < 0 ) then
 			triggerEvent("bombTimesUp", getBombHolder())
 		else
-			showBombTimer(timeLeft)
+			triggerClientEvent ("bombTimerTick")
+			triggerClientEvent("bombTimerTick", getBombHolder(), timeLeft, BOMB_START_SECONDS)
+			-- showBombTimer(timeLeft)
 		end
 	end
 end
