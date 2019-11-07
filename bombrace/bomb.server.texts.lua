@@ -18,9 +18,7 @@ function showBooserAdded(player)
 end
 
 function showPresentBombHolder(bombHolder)
-	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
-
-	displayMessageForPlayer(bombHolder, PRESENTING_BOMB_HOLDER_PERSONAL_TEXT_ID, "You have the bomb. GET IT OFF!", nil, nil, 5000, 0.5, 0.3, 255, 0, 0 )
+	displayMessageForAll(PRESENTING_BOMB_HOLDER_TEXT_ID, getPlayerName(bombHolder).." now has the bomb. Hide!", bombHolder, "You have the bomb. GET IT OFF!", 5000, 0.5, 0.3, 255, 0, 0 )
 end
 
 function showLateJoinMessage(player)
@@ -59,7 +57,7 @@ function showLeavingLobbyMessage(bombHolder)
 end
 
 function showRepairingCar(player)
-	displayMessageForPlayer(player, REPAIRING_CAR_TEXT_ID, "Car broken. Wait "..REPAIR_TIME.."s.", nil, nil, REPAIR_TIME*1000, 0.5, 0.3, 255, 128, 70 )
+	displayMessageForAll(REPAIRING_CAR_TEXT_ID, "", player, "Car broken. Wait "..REPAIR_TIME.."s.", REPAIR_TIME*1000, 0.5, 0.3, 0, 0, 255 )
 end
 
 function displayMessageForAll(textId, text, specialPlayer, specialText, displayTime, posX, posY, r, g, b, alpha, scale)
@@ -104,7 +102,6 @@ function clearMessageForPlayer ( player, ID )
 end
 
 function onClientText ( fn )
-	outputChatBox("Text function "..fn)
 	local player = client
 	_G[fn](player)
 end

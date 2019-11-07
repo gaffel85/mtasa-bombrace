@@ -32,6 +32,7 @@ function tickBombTimer()
 		else
 			showPrepareRoundTimer(timeLeft)
 		end
+		return
 	end
 
 	local players = getElementsByType ( "player" )
@@ -44,7 +45,6 @@ function tickBombTimer()
 		if ( timeLeft < 0 ) then
 			triggerEvent("bombTimesUp", getBombHolder())
 		else
-			triggerClientEvent ("bombTimerTick")
 			triggerClientEvent("bombTimerTick", getBombHolder(), timeLeft, BOMB_START_SECONDS)
 			-- showBombTimer(timeLeft)
 		end

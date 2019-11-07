@@ -316,8 +316,9 @@ function playerDied( ammo, attacker, weapon, bodypart )
 		else 
 			showRepairingCar ( source )
 			toggleAllControls ( source, false, true, false )
+			local theWasted = source
 			setTimer(function() 
-				toggleAllControls ( source, true, true, true )
+				toggleAllControls ( theWasted, true, true, true )
 			end, 5000, 1)
 		end
 	end

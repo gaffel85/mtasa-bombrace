@@ -54,6 +54,7 @@ addEventHandler ( "onClientVehicleDamage", root, function ( )
 				setVehicleDamageProof ( vehicle , false )
 			end, 5000, 1)
 		else
+			outputDebugString("Reparing car for"..inspect(driver))
 			toggleAllControls ( false, true, false )
 			setVehicleDamageProof ( vehicle , true )
 			triggerServerEvent("clientText", resourceRoot, "showRepairingCar")
@@ -64,7 +65,7 @@ addEventHandler ( "onClientVehicleDamage", root, function ( )
 			setTimer(function() 
 				toggleAllControls ( true, true, true )
 				setVehicleDamageProof ( vehicle , false )
-			end, 5000, 1)
+			end, REPAIR_TIME * 1000, 1)
 		end
 	end
 end )

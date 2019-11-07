@@ -7,8 +7,12 @@
 	<file src="sounds/stress.mp3" download="true" />
 
 	<script src="bomb.server.properties.lua" />
+	<script src="bomb.server.properties.lua" type="client" />
 	<script src="bomb.server.texts.lua" />
+
+	<script src="bomb.client.timer.lua" type="client" />
 	<script src="bomb.server.timer.lua" />
+
 	<script src="bomb.server.main.lua" />
 
 	<script src="bomb.client.bombholder.lua" type="client" />
