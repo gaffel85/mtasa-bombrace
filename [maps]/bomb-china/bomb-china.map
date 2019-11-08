@@ -1,3 +1,10 @@
-<map edf:definitions="bombrace,editor_main">
-    
+<map edf:definitions="editor_main">
+    <removeWorldObject id="removeWorldObject (tree_hipoly11) (1)" radius="21.661509" interior="0" model="733" lodModel="0" posX="-2020.0625" posY="659.58594" posZ="41.10156" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (veg_bevtree1) (1)" radius="27.49649" interior="0" model="713" lodModel="0" posX="-2030.5312" posY="678.75" posZ="49.24219" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (tree_hipoly11) (2)" radius="21.661509" interior="0" model="733" lodModel="0" posX="-2027.0312" posY="609.21094" posZ="36.89844" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (veg_bevtree3) (1)" radius="15.20327" interior="0" model="715" lodModel="0" posX="-2033.3047" posY="619.99219" posZ="48.40625" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (tree_hipoly09) (1)" radius="27.039709" interior="0" model="731" lodModel="0" posX="-2035" posY="590.25781" posZ="36.07031" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (veg_bevtree1) (2)" radius="27.49649" interior="0" model="713" lodModel="0" posX="-2061.1562" posY="583.65625" posZ="35.73438" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (veg_bevtree3) (2)" radius="15.20327" interior="0" model="715" lodModel="0" posX="-2056.7187" posY="636.70313" posZ="56.96875" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+    <removeWorldObject id="removeWorldObject (veg_bevtree3) (3)" radius="15.20327" interior="0" model="715" lodModel="0" posX="-2063.8125" posY="661.52344" posZ="60.67969" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
 </map>

@@ -24,7 +24,7 @@ function flipIfNeeded(vehicle)
 	end
 end
 
-addEventHandler ( "onClientVehicleDamage", root, function ( )
+addEventHandler ( "onClientVehicleDamage", root, function ( attacker, weapon, loss )
 
 	if ( getVehicleOccupant ( source ) ~= localPlayer ) then
 		outputDebugString("Not my vehicle"..inspect(source))
