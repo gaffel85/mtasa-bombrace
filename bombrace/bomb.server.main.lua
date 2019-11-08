@@ -316,6 +316,7 @@ function playerDied( ammo, attacker, weapon, bodypart )
 		else 
 			showRepairingCar ( source )
 			toggleAllControls ( source, false, true, false )
+			onRepairCar ( source )
 			local theWasted = source
 			setTimer(function() 
 				toggleAllControls ( theWasted, true, true, true )
@@ -399,4 +400,19 @@ function collisisionWithPlayer ( otherPlayer )
 end
 addEvent( "onCollisionWithPlayer", true )
 addEventHandler( "onCollisionWithPlayer", getRootElement(), collisisionWithPlayer )
+
+
+function onRepairCar ( player )
+	makeVisible ( player )
+	local blip = createBlipAttachedTo ( player, 27 )
+	setElementVisibleTo ( blip, root, true )
+	setElementVisibleTo ( blip, player, false )
+	showPlayerParalyzied ( getBombHolder(), player)
+	
+	setTimer(function()
+		makeVisible ( player )
+	end, REPAIR_TIME * 1000, 1)
+end
+addEvent( "repairCar", true )
+addEventHandler( "repairCar", getRootElement(), onRepairCar )
 

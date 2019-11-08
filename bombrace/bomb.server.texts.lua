@@ -8,6 +8,7 @@ local LEAVING_LOBBY_TEXT_ID = 987777
 local PREPARING_ROUND_TEXT_ID = 987778
 local POWER_UP_ADDED_TEXT_ID = 987779
 local REPAIRING_CAR_TEXT_ID = 987780
+local PARALYZIED_PLAYER_TEXT_ID = 987781
 
 function showCloakAdded(player)
 	displayMessageForAll(POWER_UP_ADDED_TEXT_ID, "Cloak ready", nil, nil, 2000, 0.5, 0.3, 0, 255, 0 )
@@ -58,6 +59,11 @@ end
 
 function showRepairingCar(player)
 	displayMessageForAll(REPAIRING_CAR_TEXT_ID, "", player, "Car broken. Wait "..REPAIR_TIME.."s.", REPAIR_TIME*1000, 0.5, 0.3, 0, 0, 255 )
+end
+
+function showPlayerParalyzied ( bombHolder, player)
+	displayMessageForAll(PARALYZIED_PLAYER_TEXT_ID, "", bombHolder, getPlayerName(player).." is paralyzied for "..REPAIR_TIME.."s. (Marked on the map)", REPAIR_TIME*1000, 0.5, 0.3, 0, 0, 255 )
+	
 end
 
 function displayMessageForAll(textId, text, specialPlayer, specialText, displayTime, posX, posY, r, g, b, alpha, scale)

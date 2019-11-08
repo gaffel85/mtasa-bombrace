@@ -58,6 +58,7 @@ addEventHandler ( "onClientVehicleDamage", root, function ( )
 			toggleAllControls ( false, true, false )
 			setVehicleDamageProof ( vehicle , true )
 			triggerServerEvent("clientText", resourceRoot, "showRepairingCar")
+			triggerServerEvent("repairCar", resourceRoot, driver)
 
 			fixVehicle (vehicle)
 			flipIfNeeded ( vehicle )

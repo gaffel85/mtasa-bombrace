@@ -46,7 +46,6 @@ function tickBombTimer()
 			triggerEvent("bombTimesUp", getBombHolder())
 		else
 			triggerClientEvent("bombTimerTick", getBombHolder(), timeLeft, BOMB_START_SECONDS)
-			-- showBombTimer(timeLeft)
 		end
 	end
 end
