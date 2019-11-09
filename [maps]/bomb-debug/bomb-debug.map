@@ -1,5 +1,5 @@
 <map edf:definitions="bombrace">
-    <playerSpawnPoint id="playerSpawnPoint (1)" skin="0" posX="1949.4" posY="-2469.6001" posZ="13.5" rotX="0" rotY="0" rotZ="0"></playerSpawnPoint>
-    <playerSpawnPoint id="playerSpawnPoint (2)" skin="0" posX="1967.4" posY="-2469.3999" posZ="13.5" rotX="0" rotY="0" rotZ="184"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (1)" posX="1949.4" posY="-2469.6001" posZ="13.5" rotX="0" rotY="0" rotZ="0"></playerSpawnPoint>
+    <playerSpawnPoint id="playerSpawnPoint (2)" posX="1967.4" posY="-2469.3999" posZ="13.5" rotX="0" rotY="0" rotZ="184"></playerSpawnPoint>
     <lobbyStart id="lobbyStart (1)" color="#0000FFFF" type="checkpoint" size="40" posX="1947.4" posY="-2420.6001" posZ="13.5" rotX="0" rotY="0" rotZ="0"></lobbyStart>
 </map>
