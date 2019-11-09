@@ -53,6 +53,10 @@ function getGameState()
 	return gameState
 end
 
+function getBombMarker()
+	return bombMarker
+end
+
 function setBombHolder ( player )
 	if(bombMarker == nil ) then
 		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
