@@ -10,7 +10,6 @@ local gameState = GAME_STATE_LOBBY
 local bombHolder
 local previousBombHolder
 local previousBombHolderResetter
-local bombMarker
 local lobbyMarker
 local participants = {}
 local blowingPlayer = nil
@@ -53,20 +52,8 @@ function getGameState()
 	return gameState
 end
 
-function getBombMarker()
-	return bombMarker
-end
-
-function attachBombMarker ( player )
-	safe = createObject(1654, 0, 0, 0, 90, 0, 0)
-	attachElements(safe, source, 0, 0, 2)
-end
-
 function setBombHolder ( player )
-	if(bombMarker == nil ) then
-		bombMarker = createMarker ( 0, 0, 1, "arrow", 2.0, 255, 0, 0)
-	end
-	attachElements ( bombMarker, player, 0, 0, 4 )
+	attachBombMarker ( player )
 
 	if ( player == bombHolder ) then
 		return
@@ -275,10 +262,7 @@ end
 function resetRoundVars()
 	bombHolder = nil
 	resetPrevBombHolder()
-	if (bombMarker ~= nil) then
-		destroyElement(bombMarker)
-		bombMarker = nil
-	end 
+	resetBombMarker()
 end
 
 function resetPrevBombHolder()

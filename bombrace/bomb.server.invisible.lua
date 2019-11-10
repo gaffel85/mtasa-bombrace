@@ -135,14 +135,12 @@ function showPlayerBlips()
 		end
 	end
 
-	local bombMarker = getBombMarker()
-	if ( bombHolder ~= nil and bombMaker ~= nil ) then
+	if ( bombHolder ~= nil) then
 		local holderState = playerVisibleState[bombHolder]
 		if ( holderState ~= nil and holderState.time > 0 ) then
-			setElementVisibleTo(bombMarker, root, false)
-			setElementVisibleTo(bombMarker, bombHolder, true)
+			hideBombMarker ( bombHolder )
 		else 
-			setElementVisibleTo(bombMarker, root, true)
+			showBombMarker ( )
 		end
 	end
 end

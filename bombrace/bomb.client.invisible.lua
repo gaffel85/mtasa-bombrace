@@ -7,6 +7,7 @@ function onClientMakeInvisible (isGhost, hardPlayers)
 		if ( getLocalPlayer() == player ) then
 			setElementAlpha( vehicle, 150 )
 			setElementAlpha( player, 0 )
+			setBombAlpha ( vehicle, 150 )
 
 			if (isGhost) then
 				for _, hardPlayer in ipairs(hardPlayers) do
@@ -17,6 +18,7 @@ function onClientMakeInvisible (isGhost, hardPlayers)
 			setElementAlpha( vehicle, 0 )
 			setElementAlpha( player, 0 )
 			setElementAlpha( vehicle, 0 )
+			setBombAlpha ( vehicle, 0 )
 			setVehicleOverrideLights ( vehicle, 1 )
 			setPlayerNametagShowing ( player, false )
 
@@ -34,6 +36,7 @@ function onClientMakeVisible (hardPlayers)
 	local vehicle = getPedOccupiedVehicle( player )
 	setElementAlpha( vehicle, 255 )
 	setElementAlpha( player, 255 )
+	setBombAlpha ( vehicle, 255 )
 	setVehicleOverrideLights ( vehicle, 0 ) 
 	setPlayerNametagShowing ( player, true )
 	for _, hardPlayer in ipairs(hardPlayers) do
@@ -43,3 +46,14 @@ function onClientMakeVisible (hardPlayers)
 end
 addEvent("clientMakeVisible", true)
 addEventHandler("clientMakeVisible", getRootElement(), onClientMakeVisible)
+
+function setBombAlpha ( vehicle, alpha )
+	local attachedElements = getAttachedElements ( vehicle )
+	if ( attachedElements ) then
+		for _, element in ipairs ( attachedElements ) do
+			if ( getElementType ( element ) == "object" ) then
+				setElementAlpha( element, alpha )
+			end
+		end
+	end
+end

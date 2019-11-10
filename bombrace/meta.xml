@@ -10,6 +10,9 @@
 	<script src="bomb.server.properties.lua" type="client" />
 	<script src="bomb.server.texts.lua" />
 
+	<script src="bomb.server.marker.lua" />
+	<script src="bomb.client.marker.lua" type="client" />
+
 	<script src="bomb.client.timer.lua" type="client" />
 	<script src="bomb.server.timer.lua" />
 
