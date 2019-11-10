@@ -137,7 +137,7 @@ function checkIfAnyAliveAndSelectNewBombHolder(lastAlive)
 		selectRandomBombHolder()
 	else
 		showWinner(alivePlayers[1])
-		setTimer(activeRoundFinished, 2000, 1)
+		setTimer(activeRoundFinished, PRESENT_WINNER_TIME * 1000, 1)
 	end
 end
 

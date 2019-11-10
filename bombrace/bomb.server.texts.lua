@@ -45,7 +45,7 @@ end
 
 function showWinner(player)
 	local message = getPlayerName ( player ).." won this round"
-	displayMessageForAll(WINNER_TEXT_ID, message, nil, nil, 5000, 0.5, 0.5, 0, 0, 255 )
+	displayMessageForAll(WINNER_TEXT_ID, message, nil, nil, PRESENT_WINNER_TIME * 1000, 0.5, 0.5, 0, 0, 255 )
 end
 
 function showPlayerReady(player)
