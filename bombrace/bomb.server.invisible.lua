@@ -143,15 +143,16 @@ function showPlayerBlips()
 	local bombHolder = getBombHolder()
 	for _,player in ipairs(getVisiblePlayers( bombHolder )) do	
 		local blip = createBlipAttachedTo ( player, 0 )
-		setElementVisibleTo ( blip, root, false )
+		setElementVisibleTo ( blip, root, ALL_SEE_MAP ) -- No one or all sees player marker
+		setElementVisibleTo ( blip, player, false ) -- Hide your own marker
 		if ( player ~= bombHolder ) then
-			setElementVisibleTo ( blip, bombHolder, true )
+			setElementVisibleTo ( blip, bombHolder, true ) -- bomb holder always sees marker
 		end
 	end
 
 	if ( bombHolder ~= nil) then
 		local holderState = playerVisibleState[bombHolder]
-		if ( holderState ~= nil and holderState.time > 0 ) then
+		if ( holderState ~= nil and holderState.time > 0 and holderState.onlyRadarHidden == false ) then
 			hideBombMarker ( bombHolder )
 		else 
 			showBombMarker ( )
