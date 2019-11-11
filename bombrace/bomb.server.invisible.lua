@@ -68,18 +68,32 @@ end
 
 --^^^^^^^^^^^^^^^^^^^^ Helpers ^^^^^^^^^^^^^^^^^^^^
 
-function makeInvisible(player, time, ghost)
+function makeInvisible(player, time, ghost, onlyRadarHidden)
 	if ( ghost == nil) then
 		ghost = true
 	end
 	if ( player == nil ) then
 		return
 	end
+	if ( onlyRadarHidden ) then
+		onlyRadarHidden = false
+	end
 
 	local currentState = playerVisibleState[player]
-	playerVisibleState[player] = { ghost = ghost, time = getEndTime(time) }
-	if ( currentState == nil or currentState.time < 0  or currentState.ghost ~= ghost) then
-		triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player))
+	playerVisibleState[player] = { ghost = ghost, time = getEndTime(time), onlyRadarHidden = onlyRadarHidden }
+	if (currentState == nil or 
+		currentState.time < 0  or 
+		currentState.ghost ~= ghost or 
+		currentState.onlyRadarHidden ~= onlyRadarHidden
+	) then
+		if ( onlyRadarHidden == false ) then
+			triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player))
+		end
+
+		if ( currentState.onlyRadarHidden ~= onlyRadarHidden and onlyRadarHidden = true ) then
+			triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
+		end
+
 		showPlayerBlips()
 	end
 end
@@ -90,7 +104,7 @@ function makeVisible(player)
 	end
 
 	local currentState = playerVisibleState[player]
-	if ( currentState ~= nil and currentState.time > 0 ) then
+	if ( currentState ~= nil and currentState.time > 0 and currentState.onlyRadarHidden == false) then
 		triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
 	end
 	showPlayerBlips()

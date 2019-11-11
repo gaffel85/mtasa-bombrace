@@ -3,7 +3,7 @@ local cloakReady = false
 
 function useCloak()
 	if ( cloakReady ) then
-		makeInvisible(getBombHolder(), CLOAK_DURATION, false)
+		makeInvisible(getBombHolder(), CLOAK_DURATION, false, CLOAK_HIDES_CAR == false)
 		resetCloakerCountdown()
 	end
 end
