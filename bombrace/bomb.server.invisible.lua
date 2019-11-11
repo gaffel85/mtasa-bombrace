@@ -75,7 +75,7 @@ function makeInvisible(player, time, ghost, onlyRadarHidden)
 	if ( player == nil ) then
 		return
 	end
-	if ( onlyRadarHidden ) then
+	if ( onlyRadarHidden == nil ) then
 		onlyRadarHidden = false
 	end
 
@@ -90,7 +90,7 @@ function makeInvisible(player, time, ghost, onlyRadarHidden)
 			triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player))
 		end
 
-		if ( currentState.onlyRadarHidden ~= onlyRadarHidden and onlyRadarHidden = true ) then
+		if ( currentState ~= nil and currentState.onlyRadarHidden ~= onlyRadarHidden and onlyRadarHidden == true ) then
 			triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
 		end
 
@@ -141,7 +141,7 @@ setTimer(periodicVisibleCheck, 1000, 0)
 function showPlayerBlips()
 	destroyElementsByType ("blip")
 	local bombHolder = getBombHolder()
-	for _,player in ipairs(getVisiblePlayers( bombHolder )) do	
+	for _,player in ipairs(getVisiblePlayers( )) do	
 		local blip = createBlipAttachedTo ( player, 0 )
 		setElementVisibleTo ( blip, root, false ) -- No one sees player marker
 		if ( player ~= bombHolder ) then
