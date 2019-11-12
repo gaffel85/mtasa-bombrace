@@ -5,6 +5,7 @@
 	<include resource="easytext" />
 
 	<file src="sounds/stress.mp3" download="true" />
+	<file src="sounds/hunted.mp3" download="true" />
 
 	<script src="bomb.server.properties.lua" />
 	<script src="bomb.server.properties.lua" type="client" />
