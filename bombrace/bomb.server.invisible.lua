@@ -86,10 +86,9 @@ function makeInvisible(player, time, ghost, onlyRadarHidden)
 		currentState.ghost ~= ghost or 
 		currentState.onlyRadarHidden ~= onlyRadarHidden
 	) then
-		if ( onlyRadarHidden == false ) then
-			triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player))
-		end
 
+		triggerClientEvent("clientMakeInvisible", player, ghost, getHardPlayers(player), onlyRadarHidden)
+		
 		if ( currentState ~= nil and currentState.onlyRadarHidden ~= onlyRadarHidden and onlyRadarHidden == true ) then
 			triggerClientEvent("clientMakeVisible", player, getHardPlayers(player))
 		end

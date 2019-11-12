@@ -124,6 +124,7 @@ function blowBombHolder()
 	local vehicle = getPedOccupiedVehicle ( bombHolder )
 	blowingPlayer = bombHolder
 	blowVehicle(vehicle)
+	resetBombMarker ()
 	bombHolder = nil
 	hideBombTimer()	
 	setTimer(givePointsToAllAlive, 1000, 1)

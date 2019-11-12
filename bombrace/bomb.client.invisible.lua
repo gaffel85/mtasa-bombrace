@@ -1,6 +1,6 @@
 -- Since we listen for events on the root element we can use the player as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
-function onClientMakeInvisible (isGhost, hardPlayers)
+function onClientMakeInvisible (isGhost, hardPlayers, onlyRadarHidden)
 	local player = source
 		
 		local vehicle = getPedOccupiedVehicle( player )
@@ -14,7 +14,8 @@ function onClientMakeInvisible (isGhost, hardPlayers)
 					setElementCollidableWith( vehicle, getPedOccupiedVehicle ( hardPlayer ) , false)
 				end
 			end
-		else
+		end
+		if ( onlyRadarHidden == false and getLocalPlayer() ~= player ) then
 			setElementAlpha( vehicle, 0 )
 			setElementAlpha( player, 0 )
 			setElementAlpha( vehicle, 0 )
