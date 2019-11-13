@@ -21,7 +21,6 @@ addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
 
 function onBombHolderCleared ( )
 	resetHuntedSound ()
-	minDistanceReached = false
 end
 addEventHandler("bombHolderCleared", getRootElement(), onBombHolderCleared)
 
@@ -47,6 +46,7 @@ end
 
 function resetHuntedSound ()
 	if ( huntedSound ~= nil ) then
+		minDistanceReached = false
 		destroyElement(huntedSound)
 		setRadioChannel ( previousRadioChannel )  
 	end
