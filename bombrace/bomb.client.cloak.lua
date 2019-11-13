@@ -20,6 +20,11 @@ function tickCloakCooldown(timeLeft, totalTime)
 	end
 
 	local progress = 100 * (totalTime - timeLeft)/totalTime
+	if ( progress < 99.5 ) then
+		guiLabelSetColor ( cloakLabel, 77, 77, 77 )
+	else 
+		guiLabelSetColor ( cloakLabel, 80, 255, 100 )
+	end
 	guiProgressBarSetProgress(cloakBar, progress)
 end
 addEvent("cloakCooldownTick", true)
