@@ -36,8 +36,11 @@ addEvent("timesAlmostUp", true)
 addEventHandler("timesAlmostUp", getRootElement(), onTimesAlmostUp)
 
 function getDistance( element, other )
-    local x, y, z = getElementPosition( element )
-    if isElement( element ) and isElement( other ) then
+	local x, y, z = getElementPosition( element )
+	outputChatBox("Bomholder: ("..x..", "..y..", "..z..")")
+	if isElement( element ) and isElement( other ) then
+		local a, b, c = getElementPosition( other )
+		outputChatBox("Other: ("..a..", "..b..", "..c..")")
         return getDistanceBetweenPoints3D( x, y, z, getElementPosition( other ))
     end
 end
@@ -51,7 +54,7 @@ end
 
 function checkCloseToBombHolder()
 	local bombHolder = getBombHolder()
-	if ( bombHolder ~= nil ) then
+	if ( bombHolder ~= nil and bombHolder ~= getLocalPlayer () ) then
 		local distance = getDistance ( bombHolder, getLocalPlayer ())
 		outputChatBox(inspect(distance))
 
