@@ -12,3 +12,9 @@ end
 addEvent("onBombHolderChanged", true)
 addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
 
+function onBombHolderCleared ( )
+	bombHolder = nil
+end
+addEvent("bombHolderCleared", true)
+addEventHandler("bombHolderCleared", getRootElement(), onBombHolderCleared)
+

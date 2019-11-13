@@ -1,7 +1,9 @@
 
 local activeSound = nil
-local huntedSound = nil
 local previousRadioChannel = nil
+
+local huntedSound = nil
+local minDistanceReached = false
 
 -- Since we listen for events on the root element we can use the bombHolder as the source. Events
 -- triggered on any element will be catched if we listening to the root element.
@@ -16,6 +18,12 @@ function bombHolderChanged ( oldBombHolder )
 	end
 end
 addEventHandler("onBombHolderChanged", getRootElement(), bombHolderChanged)
+
+function onBombHolderCleared ( )
+	resetHuntedSound ()
+	minDistanceReached = false
+end
+addEventHandler("bombHolderCleared", getRootElement(), onBombHolderCleared)
 
 function onTimesAlmostUp()
 	if ( localPlayer == getBombHolder() ) then
@@ -46,11 +54,16 @@ function checkCloseToBombHolder()
 	if ( bombHolder ~= nil ) then
 		local distance = getDistance ( bombHolder, getLocalPlayer ())
 		outputChatBox(inspect(distance))
-		if (distance < DISTANCE_FOR_MUSIC) then
+
+		if ( distance > DISTANCE_FOR_ACTIVATING_STRESS_CHECK ) then
+			minDistanceReached = true
+		end
+
+		if ( distance < DISTANCE_FOR_STRESS_SOUND ) then
 			if ( huntedSound == nil ) then
 				previousRadioChannel = getRadioChannel ( ) 
 				setRadioChannel ( 0 )  
-				huntedSound = playSound("sounds/hunted.mp3") 
+				huntedSound = playSound("sounds/hunted.mp3", true) 
 			end
 		else
 			resetHuntedSound ()

@@ -78,6 +78,11 @@ function setBombHolder ( player )
 	triggerEvent("bombHolderChanged", bombHolder, oldBombHolder)
 end
 
+function clearBombHolder ()
+	bombHolder = nil
+	triggerEvent("onBombHolderCleared", root)
+end
+
 -- Stop player from exiting vehicle
 function exitVehicle ( thePlayer, seat, jacked )
     cancelEvent()
@@ -125,7 +130,7 @@ function blowBombHolder()
 	blowingPlayer = bombHolder
 	blowVehicle(vehicle)
 	resetBombMarker ()
-	bombHolder = nil
+	clearBombHolder ()
 	hideBombTimer()	
 	setTimer(givePointsToAllAlive, 1000, 1)
 	setTimer(checkIfAnyAliveAndSelectNewBombHolder, 2000, 1, lastBomdBolder)
@@ -261,7 +266,7 @@ function resetScore()
 end
 
 function resetRoundVars()
-	bombHolder = nil
+	clearBombHolder ()
 	resetPrevBombHolder()
 	resetBombMarker()
 end
