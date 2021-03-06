@@ -134,6 +134,7 @@ function blowBombHolder()
 	hideBombTimer()	
 	setTimer(givePointsToAllAlive, 1000, 1)
 	setTimer(checkIfAnyAliveAndSelectNewBombHolder, 2000, 1, lastBomdBolder)
+	setTimer(destroyElement, 8000, 1, vehicle)
 end
 addEventHandler("bombTimesUp", root, blowBombHolder)
 

@@ -36,10 +36,7 @@ addEventHandler("timesAlmostUp", getRootElement(), onTimesAlmostUp)
 
 function getDistance( element, other )
 	local x, y, z = getElementPosition( element )
-	outputChatBox("Bomholder: ("..x..", "..y..", "..z..")")
 	if isElement( element ) and isElement( other ) then
-		local a, b, c = getElementPosition( other )
-		outputChatBox("Other: ("..a..", "..b..", "..c..")")
         return getDistanceBetweenPoints3D( x, y, z, getElementPosition( other ))
     end
 end
@@ -62,14 +59,18 @@ function checkCloseToBombHolder()
 			minDistanceReached = true
 		end
 
-		if ( distance < DISTANCE_FOR_STRESS_SOUND ) then
-			if ( huntedSound == nil ) then
-				previousRadioChannel = getRadioChannel ( ) 
-				setRadioChannel ( 0 )  
-				huntedSound = playSound("sounds/hunted.mp3", true) 
+		if ( minDistanceReached ) then 
+			if ( distance < DISTANCE_FOR_STRESS_SOUND ) then
+				if ( huntedSound == nil ) then
+					previousRadioChannel = getRadioChannel ( ) 
+					setRadioChannel ( 0 )  
+					huntedSound = playSound("sounds/hunted.mp3", true) 
+				end
+			else
+				if ( huntedSound ~= nil ) then
+					resetHuntedSound ()
+				end
 			end
-		else
-			resetHuntedSound ()
 		end
 	end
 end
