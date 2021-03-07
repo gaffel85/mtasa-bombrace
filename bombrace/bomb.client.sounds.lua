@@ -74,7 +74,7 @@ function checkCloseToBombHolder()
 		end
 	end
 end
-setTimer(checkCloseToBombHolder, 1000, 0)
+-- setTimer(checkCloseToBombHolder, 1000, 0)
 
 
 
